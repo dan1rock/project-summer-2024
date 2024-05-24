@@ -5,16 +5,19 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         Renderer renderer = new Renderer();
-        Mesh teapotMesh = new Mesh();
+        Mesh penguinMesh = new Mesh();
+        int penguinTexture = 0;
 
         try {
-            teapotMesh.loadObj("./Meshes/teapot.obj");
+            penguinMesh.loadObj("./Meshes/penguin.obj");
+            penguinTexture = Texture.loadRGBTexture("./Textures/penguin.png");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        RenderMesh teapot = new RenderMesh(teapotMesh);
-        teapot.scale.mul(0.5f);
+        RenderMesh penguin = new RenderMesh(penguinMesh);
+        penguin.setTexture(penguinTexture);
+        penguin.scale.mul(2f);
 
         Cube cube1 = new Cube();
         Cube cube2 = new Cube();
@@ -26,7 +29,7 @@ public class Main {
 
 //        renderer.renderObjects.add(cube1);
 //        renderer.renderObjects.add(cube2);
-        renderer.renderObjects.add(teapot);
+        renderer.renderObjects.add(penguin);
 
         renderer.runMainLoop();
     }

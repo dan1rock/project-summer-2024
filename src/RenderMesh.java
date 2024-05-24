@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 public class RenderMesh extends RenderObject{
     private Mesh mesh;
     private int texture;
+    private int shaderProgramID;
     private boolean isTextured = false;
 
     public RenderMesh(Mesh mesh) {
@@ -15,6 +16,10 @@ public class RenderMesh extends RenderObject{
         this.position = new Vector3f(0f, 0f, 0f);
         this.rotation = new Vector3f(0f, 0f, 0f);
         this.scale = new Vector3f(1f, 1f, 1f);
+
+        String vertexShader = FileUtils.readFileAsString("./src/shaders/vertex.glsl");
+        String fragmentShader = FileUtils.readFileAsString("./src/shaders/fragment.glsl");
+        shaderProgramID = ShaderUtils.createShaderProgram(vertexShader, fragmentShader);
     }
 
     public RenderMesh(Mesh mesh, Vector3f position, Vector3f rotation, Vector3f scale) {
@@ -55,6 +60,25 @@ public class RenderMesh extends RenderObject{
         glRotatef(rotation.y, 0, 1, 0);
         glRotatef(rotation.z, 0, 0, 1);
         glScalef(scale.x, scale.y, scale.z);
+
+        glUseProgram(shaderProgramID);
+
+        // Pass transformation matrices to the shader
+        int modelLoc = glGetUniformLocation(shaderProgramID, "model");
+        int viewLoc = glGetUniformLocation(shaderProgramID, "view");
+        int projLoc = glGetUniformLocation(shaderProgramID, "projection");
+
+        float[] modelMatrix = new float[16];
+        float[] viewMatrix = new float[16];
+        float[] projectionMatrix = new float[16];
+
+        glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
+        //glGetFloatv(GL_, modelMatrix);
+        glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
+
+        glUniformMatrix4fv(modelLoc, false, modelMatrix);
+        //glUniformMatrix4fv(viewLoc, false, viewMatrix);
+        glUniformMatrix4fv(projLoc, false, projectionMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
