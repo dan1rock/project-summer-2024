@@ -7,6 +7,8 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 
 public class RenderMesh extends RenderObject{
     private Mesh mesh;
+    private int texture;
+    private boolean isTextured = false;
 
     public RenderMesh(Mesh mesh) {
         this.mesh = mesh;
@@ -22,6 +24,11 @@ public class RenderMesh extends RenderObject{
         this.scale = scale;
     }
 
+    public void setTexture(int textureID) {
+        texture = textureID;
+        isTextured = true;
+    }
+
     @Override
     public void Update(float deltaTime) {
         rotation.x += 50f * deltaTime;
@@ -31,6 +38,16 @@ public class RenderMesh extends RenderObject{
 
     public void Draw() {
         glEnable(GL_LIGHTING);
+
+        if (isTextured) {
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+        }
+        else {
+            glDisable(GL_TEXTURE_2D);
+        }
+
         glPushMatrix();
 
         glTranslatef(position.x, position.y, position.z);
@@ -41,10 +58,13 @@ public class RenderMesh extends RenderObject{
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.textureVboId);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, mesh.normalVboId);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
 
         glColor3fv(Color.Magenta);
@@ -56,6 +76,7 @@ public class RenderMesh extends RenderObject{
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
