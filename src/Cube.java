@@ -3,10 +3,6 @@ package src;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Cube extends RenderObject {
-    private Vector3f position;
-    private Vector3f rotation;
-    private Vector3f scale;
-
     public Cube() {
         this.position = new Vector3f(0f, 0f, 0f);
         this.rotation = new Vector3f(0f, 0f, 0f);
@@ -19,22 +15,10 @@ public class Cube extends RenderObject {
         this.scale = scale;
     }
 
-    public void setPosition(Vector3f position) {
-        this.position = position;
-    }
-
-    public void setRotation(Vector3f rotation) {
-        this.rotation = rotation;
-    }
-
-    public void setScale(Vector3f scale) {
-        this.scale = scale;
-    }
-
     @Override
-    public void Update() {
-        rotation.x += 1f;
-        rotation.y += 1f;
+    public void Update(float deltaTime) {
+        rotation.x += 50f * deltaTime;
+        rotation.y += 30f * deltaTime;
         Draw();
     }
 

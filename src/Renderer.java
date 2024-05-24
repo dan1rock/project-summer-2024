@@ -134,7 +134,7 @@ public class Renderer {
         glTranslatef(0.0f, 0.0f, -8.0f);
 
         for (RenderObject renderObject : renderObjects) {
-            renderObject.Update();
+            renderObject.Update(frameTime / 1000f);
         }
 
 
