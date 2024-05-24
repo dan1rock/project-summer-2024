@@ -66,6 +66,8 @@ public class Renderer {
         GLFW.glfwMakeContextCurrent(window);
         GL.createCapabilities();
 
+        float[] diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         glEnable(GL_COLOR_MATERIAL);

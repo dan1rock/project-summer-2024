@@ -18,6 +18,12 @@ public class Vector3f {
         }
     }
 
+    public void mul(float value) {
+        x *= value;
+        y *= value;
+        z *= value;
+    }
+
     public static Vector3f sub(Vector3f left, Vector3f right) {
         return new Vector3f(left.x - right.x, left.y - right.y, left.z - right.z);
     }
