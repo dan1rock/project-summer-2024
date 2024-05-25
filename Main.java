@@ -10,29 +10,28 @@ public class Main {
         int shaderProgramID = ShaderUtils.createShaderProgram(vertexShader, fragmentShader);
 
         Mesh penguinMesh = new Mesh();
+        Mesh rabbitMesh = new Mesh();
         int penguinTexture;
+        int gradientTexture;
 
         try {
             penguinMesh.loadObj("./Meshes/penguin.obj");
+            rabbitMesh.loadObj("./Meshes/rabbit.obj");
             penguinTexture = Texture.loadRGBTexture("./Textures/penguin.png");
+            gradientTexture = Texture.loadRGBTexture("./Textures/256-gradient.png");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         RenderMesh penguin = new RenderMesh(penguinMesh, shaderProgramID);
+        RenderMesh rabbit = new RenderMesh(rabbitMesh, shaderProgramID);
         penguin.setTexture(penguinTexture);
+        rabbit.setTexture(gradientTexture);
         penguin.scale.mul(3f);
 
-        Cube cube1 = new Cube();
-        Cube cube2 = new Cube();
+        rabbit.position = new Vector3f(2f, 0f, 0f);
 
-        cube1.position = new Vector3f(2f, 0f, 0f);
-
-        cube2.position = new Vector3f(-2f, 0f, 0f);
-        cube2.rotation = new Vector3f(45f, 60f, 0f);
-
-        renderer.renderObjects.add(cube1);
-        renderer.renderObjects.add(cube2);
+        renderer.renderObjects.add(rabbit);
         renderer.renderObjects.add(penguin);
 
         renderer.runMainLoop();
