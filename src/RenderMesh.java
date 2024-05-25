@@ -6,24 +6,22 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 
 public class RenderMesh extends RenderObject{
-    private Mesh mesh;
+    private final Mesh mesh;
     private int texture;
-    private int shaderProgramID;
+    private final int shaderProgramID;
     private boolean isTextured = false;
 
-    public RenderMesh(Mesh mesh) {
+    public RenderMesh(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
+        this.shaderProgramID = shaderProgramID;
         this.position = new Vector3f(0f, 0f, 0f);
         this.rotation = new Vector3f(0f, 0f, 0f);
         this.scale = new Vector3f(1f, 1f, 1f);
-
-        String vertexShader = FileUtils.readFileAsString("./src/shaders/vertex.glsl");
-        String fragmentShader = FileUtils.readFileAsString("./src/shaders/fragment.glsl");
-        shaderProgramID = ShaderUtils.createShaderProgram(vertexShader, fragmentShader);
     }
 
-    public RenderMesh(Mesh mesh, Vector3f position, Vector3f rotation, Vector3f scale) {
+    public RenderMesh(Mesh mesh, int shaderProgramID, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.mesh = mesh;
+        this.shaderProgramID = shaderProgramID;
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
@@ -63,21 +61,30 @@ public class RenderMesh extends RenderObject{
 
         glUseProgram(shaderProgramID);
 
-        // Pass transformation matrices to the shader
+        int lightPosLoc = glGetUniformLocation(shaderProgramID, "lightPos");
+        int viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
+        int lightColorLoc = glGetUniformLocation(shaderProgramID, "lightColor");
+        int objectColorLoc = glGetUniformLocation(shaderProgramID, "objectColor");
+        int ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
+        int shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
+
+        glUniform3f(lightPosLoc, 1.0f, 1.0f, 1.0f);
+        glUniform3f(viewPosLoc, 0.0f, 0.0f, 5.0f);
+        glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+        glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
+        glUniform1f(ambientStrengthLoc, 0.5f);
+        glUniform1f(shininessLoc, 32.0f);
+
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");
-        int viewLoc = glGetUniformLocation(shaderProgramID, "view");
         int projLoc = glGetUniformLocation(shaderProgramID, "projection");
 
         float[] modelMatrix = new float[16];
-        float[] viewMatrix = new float[16];
         float[] projectionMatrix = new float[16];
 
         glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
-        //glGetFloatv(GL_, modelMatrix);
         glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
 
         glUniformMatrix4fv(modelLoc, false, modelMatrix);
-        //glUniformMatrix4fv(viewLoc, false, viewMatrix);
         glUniformMatrix4fv(projLoc, false, projectionMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);

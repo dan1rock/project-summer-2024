@@ -5,8 +5,12 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         Renderer renderer = new Renderer();
+        String vertexShader = FileUtils.readFileAsString("./src/shaders/vertex.glsl");
+        String fragmentShader = FileUtils.readFileAsString("./src/shaders/fragment.glsl");
+        int shaderProgramID = ShaderUtils.createShaderProgram(vertexShader, fragmentShader);
+
         Mesh penguinMesh = new Mesh();
-        int penguinTexture = 0;
+        int penguinTexture;
 
         try {
             penguinMesh.loadObj("./Meshes/penguin.obj");
@@ -15,9 +19,9 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        RenderMesh penguin = new RenderMesh(penguinMesh);
+        RenderMesh penguin = new RenderMesh(penguinMesh, shaderProgramID);
         penguin.setTexture(penguinTexture);
-        penguin.scale.mul(2f);
+        penguin.scale.mul(3f);
 
         Cube cube1 = new Cube();
         Cube cube2 = new Cube();
