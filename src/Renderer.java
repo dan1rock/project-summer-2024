@@ -130,16 +130,21 @@ public class Renderer {
         GLFW.glfwPollEvents();
     }
 
+    private float angle;
     private void drawScene(long frameTime) {
         glPushMatrix();
         glLoadIdentity();
-        glTranslatef(0.0f, 0.0f, -8.0f);
+        glTranslatef(0.0f, 0.0f, -15.0f);
+        glRotatef(30f, 1.0f, 0.0f, 0.0f);
+        glRotatef(angle, 0.0f, 1.0f, 0.0f);
 
         for (RenderObject renderObject : renderObjects) {
             renderObject.Update(frameTime / 1000f);
         }
 
-
         glPopMatrix();
+
+        angle += 30f * frameTime / 1000f;
+        if (angle > 360f) angle = 0f;
     }
 }

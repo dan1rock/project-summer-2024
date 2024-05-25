@@ -17,8 +17,6 @@ public class Cube extends RenderObject {
 
     @Override
     public void Update(float deltaTime) {
-        rotation.x += 50f * deltaTime;
-        rotation.y += 30f * deltaTime;
         Draw();
     }
 

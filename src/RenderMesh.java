@@ -34,8 +34,6 @@ public class RenderMesh extends RenderObject{
 
     @Override
     public void Update(float deltaTime) {
-        rotation.x += 50f * deltaTime;
-        rotation.y += 30f * deltaTime;
         Draw();
     }
 
@@ -46,6 +44,8 @@ public class RenderMesh extends RenderObject{
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, texture);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
         }
         else {
             glDisable(GL_TEXTURE_2D);
@@ -112,5 +112,6 @@ public class RenderMesh extends RenderObject{
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glPopMatrix();
+        glUseProgram(0);
     }
 }
