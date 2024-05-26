@@ -10,6 +10,8 @@ public class RenderMesh extends RenderObject{
     private float[] objectColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
+    private float ambient = 0.1f;
+    private float shininess = 32f;
 
     public RenderMesh(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
@@ -30,6 +32,14 @@ public class RenderMesh extends RenderObject{
     public void setTexture(int textureID) {
         texture = textureID;
         isTextured = true;
+    }
+
+    public void setAmbient(float ambient) {
+        this.ambient = ambient;
+    }
+
+    public void setShininess(float shininess) {
+        this.shininess = shininess;
     }
 
     public void setObjectColor(float[] color) {
@@ -85,8 +95,8 @@ public class RenderMesh extends RenderObject{
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
         glUniform3fv(lightColorLoc, renderer.lightColor);
         glUniform3fv(objectColorLoc, objectColor);
-        glUniform1f(ambientStrengthLoc, 0.1f);
-        glUniform1f(shininessLoc, 32.0f);
+        glUniform1f(ambientStrengthLoc, ambient);
+        glUniform1f(shininessLoc, shininess);
         glUniform1i(isTexturedLoc, isTextured ? 1 : 0);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");
