@@ -10,7 +10,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL15.*;
 
 public class Terrain extends Mesh {
-    public Terrain(int width, int depth, float maxHeight) {
+    public Terrain(int width, int depth, float maxHeight, float textureScale) {
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Vector3f> textureCoords = new ArrayList<>();
@@ -22,7 +22,9 @@ public class Terrain extends Mesh {
             for (int x = 0; x < width; x++) {
                 float height = heightMap[x][z];
                 vertices.add(new Vector3f(x, height, z));
-                textureCoords.add(new Vector3f((float) x / (width - 1), (float) z / (depth - 1), 0));
+                float u = (float) x / (width - 1) * textureScale;
+                float v = (float) z / (depth - 1) * textureScale;
+                textureCoords.add(new Vector3f(u, v, 0));
                 normals.add(new Vector3f());
             }
         }
@@ -46,7 +48,7 @@ public class Terrain extends Mesh {
         calculateNormals(vertices, normals, indices);
 
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.size() * 3);
-        FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(textureCoords.size() * 3);
+        FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(textureCoords.size() * 2);
         FloatBuffer normalsBuffer = BufferUtils.createFloatBuffer(normals.size() * 3);
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.size());
 
@@ -54,7 +56,7 @@ public class Terrain extends Mesh {
             verticesBuffer.put(vertex.x).put(vertex.y).put(vertex.z);
         }
         for (Vector3f textureCoord : textureCoords) {
-            textureBuffer.put(textureCoord.x).put(textureCoord.y).put(textureCoord.z);
+            textureBuffer.put(textureCoord.y).put(textureCoord.x);
         }
         for (Vector3f normal : normals) {
             normalsBuffer.put(normal.x).put(normal.y).put(normal.z);

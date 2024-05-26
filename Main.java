@@ -5,7 +5,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         Renderer renderer = Renderer.getInstance();
-        renderer.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);;
+        renderer.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);
 
         String vertexShader = FileUtils.readFileAsString("./src/shaders/vertex.glsl");
         String fragmentShader = FileUtils.readFileAsString("./src/shaders/fragment.glsl");
@@ -15,12 +15,14 @@ public class Main {
         Mesh rabbitMesh = new Mesh();
         int penguinTexture;
         int gradientTexture;
+        int grassTexture;
 
         try {
             penguinMesh.loadObj("./Meshes/penguin.obj");
             rabbitMesh.loadObj("./Meshes/rabbit.obj");
             penguinTexture = Texture.loadRGBTexture("./Textures/penguin.png");
             gradientTexture = Texture.loadRGBTexture("./Textures/256-gradient.png");
+            grassTexture = Texture.loadRGBTexture("./Textures/grass.jpg");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -33,10 +35,12 @@ public class Main {
 
         rabbit.position = new Vector3f(2f, 0f, 0f);
 
-        Terrain terrainMesh = new Terrain(100,  100, 20);
+        Terrain terrainMesh = new Terrain(1000,  1000, 10, 50f);
         RenderMesh terrain = new RenderMesh(terrainMesh, shaderProgramID);
         terrain.scale = new Vector3f(0.5f, 0.5f, 0.5f);
-        terrain.setObjectColor(new Vector3f(0.01f, 0.5f, 0.2f));
+        terrain.position = new Vector3f(-250f, 0f, -250f);
+        terrain.setObjectColor(new Vector3f(0.05f, 0.7f, 0.4f));
+        terrain.setTexture(grassTexture);
 
         renderer.renderObjects.add(rabbit);
         renderer.renderObjects.add(penguin);
