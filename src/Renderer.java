@@ -1,18 +1,28 @@
 package src;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
     private static long window;
     protected int width;
     protected int height;
+    public Camera camera;
+    public float deltaTime;
+
+    private boolean[] keys = new boolean[1024];
+    private float lastX = 400, lastY = 300;
+    private boolean firstMouse = true;
+
     public List<RenderObject> renderObjects = new ArrayList<>();
 
     public Renderer() {
@@ -78,6 +88,38 @@ public class Renderer {
         GLFW.glfwSetFramebufferSizeCallback(window, (win, width, height) -> {
             setViewport(width, height, 45.0f, 0.1f, 100.0f, Projection.Perspective);
         });
+
+        glfwSetKeyCallback(window, new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+                    glfwSetWindowShouldClose(window, true);
+                if (action == GLFW_PRESS)
+                    keys[key] = true;
+                else if (action == GLFW_RELEASE)
+                    keys[key] = false;
+            }
+        });
+
+        glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double posX, double posY) {
+                if (firstMouse) {
+                    lastX = (float) posX;
+                    lastY = (float) posY;
+                    firstMouse = false;
+                }
+
+                float xOffset = (float) posX - lastX;
+                float yOffset = lastY - (float) posY;
+                lastX = (float) posX;
+                lastY = (float) posY;
+
+                camera.processMouseMovement(xOffset, yOffset);
+            }
+        });
+
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     public void runMainLoop() {
@@ -111,6 +153,7 @@ public class Renderer {
             long elapsedTime = currentTime - lastRenderTime;
 
             if (elapsedTime >= targetFrameTime) {
+                deltaTime = (currentTime - lastRenderTime) / 1000f;
                 Update(currentTime - lastRenderTime);
                 lastRenderTime = currentTime;
             } else {
@@ -134,17 +177,21 @@ public class Renderer {
     private void drawScene(long frameTime) {
         glPushMatrix();
         glLoadIdentity();
-        glTranslatef(0.0f, 0.0f, -15.0f);
-        glRotatef(30f, 1.0f, 0.0f, 0.0f);
-        glRotatef(angle, 0.0f, 1.0f, 0.0f);
+        processInput();
+        camera.gluLookAt();
+        //glLoadMatrixf(camera.getViewMatrix());
 
         for (RenderObject renderObject : renderObjects) {
-            renderObject.Update(frameTime / 1000f);
+            renderObject.Update(deltaTime);
         }
 
         glPopMatrix();
 
-        angle += 30f * frameTime / 1000f;
+        angle += 30f * deltaTime;
         if (angle > 360f) angle = 0f;
+    }
+
+    private void processInput() {
+        camera.processKeyboard(keys, deltaTime);
     }
 }

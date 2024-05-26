@@ -57,6 +57,17 @@ public class Vector3f {
         return new Vector3f(left.x - right.x, left.y - right.y, left.z - right.z);
     }
 
+    public Vector3f cross(Vector3f vector3f) {
+        x = y * vector3f.z - z * vector3f.y;
+        y = z * vector3f.x - x * vector3f.z;
+        z = x * vector3f.y - y * vector3f.x;
+        return this;
+    }
+
+    public float dot(Vector3f vector3f) {
+        return x * vector3f.x + y * vector3f.y + z * vector3f.z;
+    }
+
     public static Vector3f cross(Vector3f a, Vector3f b) {
         return new Vector3f(
                 a.y * b.z - a.z * b.y,
