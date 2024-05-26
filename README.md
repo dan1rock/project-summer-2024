@@ -1,2 +1,2 @@
-# project-summer-2024
+# Java x OpenGL graphics engine
  

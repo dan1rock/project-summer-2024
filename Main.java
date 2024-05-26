@@ -1,4 +1,5 @@
 import src.objects.Camera;
+import src.objects.Terrain;
 import src.rendering.Mesh;
 import src.rendering.RenderMesh;
 import src.rendering.Renderer;
@@ -46,18 +47,19 @@ public class Main {
 
         rabbit.position = new Vector3f(2f, 0f, 0f);
 
-//        Terrain terrainMesh = new Terrain(1000,  1000, 10, 50f);
-//        RenderMesh terrain = new RenderMesh(terrainMesh, shaderProgramID);
-//        terrain.scale = new Vector3f(0.5f, 0.5f, 0.5f);
-//        terrain.position = new Vector3f(-250f, 0f, -250f);
-//        terrain.setObjectColor(new Vector3f(0.05f, 0.7f, 0.4f));
-//        terrain.setTexture(grassTexture);
-//        renderer.renderObjects.add(terrain);
+        Terrain terrainMesh = new Terrain(1000,  1000, 10, 50f);
+        RenderMesh terrain = new RenderMesh(terrainMesh, shaderProgramID);
+        terrain.scale = new Vector3f(0.5f, 0.5f, 0.5f);
+        terrain.position = new Vector3f(-250f, 0f, -250f);
+        terrain.setObjectColor(new Vector3f(0.05f, 0.7f, 0.4f));
+        terrain.setTexture(grassTexture);
+        renderer.renderObjects.add(terrain);
 
         RenderMesh base = new RenderMesh(baseMesh, shaderProgramID);
         base.setTexture(baseTexture);
-        base.position = new Vector3f(0f, -10f, 0f);
-        base.scale = new Vector3f(0.1f, 0.1f, 0.1f);
+        base.position = new Vector3f(0f, 0f, -10f);
+        base.rotation = new Vector3f(0f, -90f, 0f);
+        base.scale = new Vector3f(0.2f, 0.2f, 0.2f);
         base.setAmbient(0.5f);
 
         renderer.renderObjects.add(rabbit);
