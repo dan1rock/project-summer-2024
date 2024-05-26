@@ -1,4 +1,8 @@
-package src;
+package src.rendering;
+
+import org.lwjgl.opengl.GL11;
+import src.utils.Color;
+import src.utils.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -122,7 +126,7 @@ public class RenderMesh extends RenderObject{
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
 
-        glColor3fv(Color.Magenta);
+        GL11.glColor3fv(Color.Magenta);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indexVboId);
 

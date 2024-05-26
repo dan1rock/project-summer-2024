@@ -1,4 +1,4 @@
-package src;
+package src.utils;
 
 public class Vector3f {
     public float x, y, z;

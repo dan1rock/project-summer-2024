@@ -1,4 +1,7 @@
-package src;
+package src.objects;
+
+import src.rendering.RenderObject;
+import src.utils.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 

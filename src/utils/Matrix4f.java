@@ -1,4 +1,4 @@
-package src;
+package src.utils;
 
 public class Matrix4f {
     public static float[] lookAt(Vector3f eye, Vector3f center, Vector3f up) {

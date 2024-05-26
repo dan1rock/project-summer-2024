@@ -1,4 +1,11 @@
-import src.*;
+import src.objects.Camera;
+import src.rendering.Mesh;
+import src.rendering.RenderMesh;
+import src.rendering.Renderer;
+import src.rendering.Texture;
+import src.utils.FileUtils;
+import src.utils.ShaderUtils;
+import src.utils.Vector3f;
 
 import java.io.IOException;
 

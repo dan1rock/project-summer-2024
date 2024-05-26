@@ -1,10 +1,13 @@
-package src;
+package src.rendering;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import src.objects.Camera;
+import src.utils.Projection;
+import src.utils.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;

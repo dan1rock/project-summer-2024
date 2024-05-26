@@ -1,4 +1,7 @@
-package src;
+package src.objects;
+
+import src.utils.Matrix4f;
+import src.utils.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;

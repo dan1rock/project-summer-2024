@@ -1,6 +1,9 @@
-package src;
+package src.objects;
 
 import org.lwjgl.BufferUtils;
+import src.rendering.Mesh;
+import src.utils.PerlinNoise;
+import src.utils.Vector3f;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

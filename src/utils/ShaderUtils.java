@@ -1,4 +1,4 @@
-package src;
+package src.utils;
 
 import static org.lwjgl.opengl.GL20.*;
 

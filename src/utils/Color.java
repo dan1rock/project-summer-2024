@@ -1,4 +1,4 @@
-package src;
+package src.utils;
 
 public class Color {
     public static final float[] White = {1.0f, 1.0f, 1.0f};

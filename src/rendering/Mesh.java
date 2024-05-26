@@ -1,6 +1,7 @@
-package src;
+package src.rendering;
 
 import org.lwjgl.BufferUtils;
+import src.utils.Vector3f;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,4 +1,6 @@
-package src;
+package src.rendering;
+
+import src.utils.Vector3f;
 
 public abstract class RenderObject {
     public Vector3f position;
