@@ -33,8 +33,12 @@ public class Main {
 
         rabbit.position = new Vector3f(2f, 0f, 0f);
 
+        Terrain terrainMesh = new Terrain(10,  10, 2);
+        RenderMesh terrain = new RenderMesh(terrainMesh, shaderProgramID);
+
         renderer.renderObjects.add(rabbit);
         renderer.renderObjects.add(penguin);
+        renderer.renderObjects.add(terrain);
 
         renderer.runMainLoop();
     }

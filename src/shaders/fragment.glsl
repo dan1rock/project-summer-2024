@@ -15,8 +15,15 @@ uniform vec3 objectColor;
 uniform float ambientStrength;
 uniform float shininess;
 
+uniform bool isTextured;
+
 void main() {
-    vec4 texColor = texture(textureSampler, TexCoord);
+    vec4 texColor;
+    if (isTextured) {
+        texColor = texture(textureSampler, TexCoord);
+    } else {
+        texColor = vec4(objectColor, 1.0);
+    }
 
     // Ambient lighting
     vec3 ambient = ambientStrength * lightColor;

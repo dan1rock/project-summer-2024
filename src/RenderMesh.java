@@ -3,7 +3,6 @@ package src;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 
 public class RenderMesh extends RenderObject{
     private final Mesh mesh;
@@ -67,6 +66,7 @@ public class RenderMesh extends RenderObject{
         int objectColorLoc = glGetUniformLocation(shaderProgramID, "objectColor");
         int ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
         int shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
+        int isTexturedLoc = glGetUniformLocation(shaderProgramID, "isTextured");
 
         glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
@@ -74,6 +74,7 @@ public class RenderMesh extends RenderObject{
         glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
         glUniform1f(ambientStrengthLoc, 0.1f);
         glUniform1f(shininessLoc, 32.0f);
+        glUniform1i(isTexturedLoc, isTextured ? 1 : 0);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");
         int projLoc = glGetUniformLocation(shaderProgramID, "projection");
