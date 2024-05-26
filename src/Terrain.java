@@ -93,11 +93,11 @@ public class Terrain extends Mesh {
     }
 
     private float[][] generateHeightMap(int width, int depth, float maxHeight) {
-        Random random = new Random();
+        PerlinNoise perlinNoise = new PerlinNoise(10, 1f, 1f);
         float[][] heightMap = new float[width][depth];
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
-                heightMap[x][z] = random.nextFloat() * maxHeight;
+                heightMap[x][z] = perlinNoise.getPerlinNoise(x, z) * maxHeight;
             }
         }
         return heightMap;
