@@ -19,14 +19,31 @@ public class Renderer {
     public Camera camera;
     public float deltaTime;
 
-    private boolean[] keys = new boolean[1024];
+    private final boolean[] keys = new boolean[1024];
     private float lastX = 400, lastY = 300;
     private boolean firstMouse = true;
 
     public List<RenderObject> renderObjects = new ArrayList<>();
 
-    public Renderer() {
+    public Vector3f lightPos = new Vector3f(0f, 0f, 5f);
+    public Vector3f viewPos;
+    public float[] lightColor = new float[]{1.0f, 1.0f, 1.0f};
+
+    private static Renderer instance;
+
+    private Renderer() {
         OnCreate();
+    }
+
+    public static Renderer getInstance() {
+        if (instance == null) {
+            synchronized (Renderer.class) {
+                if (instance == null) {
+                    instance = new Renderer();
+                }
+            }
+        }
+        return instance;
     }
 
     private void setViewport(int width, int height, float fov, float near, float far, Projection projection) {
@@ -178,6 +195,7 @@ public class Renderer {
         glPushMatrix();
         glLoadIdentity();
         processInput();
+        viewPos = camera.position;
         camera.gluLookAt();
         //glLoadMatrixf(camera.getViewMatrix());
 

@@ -68,11 +68,11 @@ public class RenderMesh extends RenderObject{
         int ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
         int shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
 
-        glUniform3f(lightPosLoc, 1.0f, 1.0f, 1.0f);
-        glUniform3f(viewPosLoc, 0.0f, 0.0f, 5.0f);
-        glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
+        glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
+        glUniform3fv(lightColorLoc, renderer.lightColor);
         glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
-        glUniform1f(ambientStrengthLoc, 0.5f);
+        glUniform1f(ambientStrengthLoc, 0.1f);
         glUniform1f(shininessLoc, 32.0f);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");

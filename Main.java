@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Renderer renderer = new Renderer();
+        Renderer renderer = Renderer.getInstance();
         renderer.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);;
 
         String vertexShader = FileUtils.readFileAsString("./src/shaders/vertex.glsl");

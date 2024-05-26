@@ -4,13 +4,13 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Camera {
-    private Vector3f position;
+    public Vector3f position;
     private Vector3f front;
     private Vector3f up;
     private Vector3f right;
     private Vector3f worldUp;
 
-    public float yaw;
+    private float yaw;
     private float pitch;
 
     private float movementSpeed;
