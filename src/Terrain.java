@@ -6,7 +6,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.lwjgl.opengl.GL15.*;
 
@@ -97,7 +96,7 @@ public class Terrain extends Mesh {
         float[][] heightMap = new float[width][depth];
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
-                heightMap[x][z] = perlinNoise.getPerlinNoise(x, z) * maxHeight;
+                heightMap[x][z] = perlinNoise.getPerlinNoise(x * 0.1f, z * 0.1f) * maxHeight;
             }
         }
         return heightMap;

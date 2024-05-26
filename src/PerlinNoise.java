@@ -24,7 +24,7 @@ public class PerlinNoise {
         this.roughness = roughness;
     }
 
-    public float getPerlinNoise(int x, int y) {
+    public float getPerlinNoise(float x, float y) {
         float total = 0;
         float d = (float) Math.pow(2, octaves - 1);
         for (int i = 0; i < octaves; i++) {

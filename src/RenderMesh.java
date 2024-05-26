@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class RenderMesh extends RenderObject{
     private final Mesh mesh;
     private int texture;
+    private float[] objectColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
 
@@ -29,6 +30,18 @@ public class RenderMesh extends RenderObject{
     public void setTexture(int textureID) {
         texture = textureID;
         isTextured = true;
+    }
+
+    public void setObjectColor(float[] color) {
+        objectColor[0] = color[0];
+        objectColor[1] = color[1];
+        objectColor[2] = color[2];
+    }
+
+    public void setObjectColor(Vector3f color) {
+        objectColor[0] = color.x;
+        objectColor[1] = color.y;
+        objectColor[2] = color.z;
     }
 
     @Override
@@ -71,7 +84,7 @@ public class RenderMesh extends RenderObject{
         glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
         glUniform3fv(lightColorLoc, renderer.lightColor);
-        glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
+        glUniform3fv(objectColorLoc, objectColor);
         glUniform1f(ambientStrengthLoc, 0.1f);
         glUniform1f(shininessLoc, 32.0f);
         glUniform1i(isTexturedLoc, isTextured ? 1 : 0);
