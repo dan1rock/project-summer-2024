@@ -52,7 +52,7 @@ public class Main {
         terrain.position = new Vector3f(-250f, 0f, -250f);
         terrain.setObjectColor(new Vector3f(0.05f, 0.7f, 0.4f));
         terrain.setTexture(grassTexture);
-        terrain.setAmbient(0.2f);
+        terrain.setAmbient(0.4f);
         renderer.renderObjects.add(terrain);
 
         RenderMesh base = new RenderMesh(baseMesh, shaderProgramID);

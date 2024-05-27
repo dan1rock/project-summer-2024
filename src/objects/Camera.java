@@ -35,46 +35,6 @@ public class Camera {
         return Matrix4f.lookAt(position, new Vector3f(position).add(front), up);
     }
 
-    public void gluLookAt() {
-        float centerX = new Vector3f(position).add(front).x;
-        float centerY = new Vector3f(position).add(front).y;
-        float centerZ = new Vector3f(position).add(front).z;
-        float eyeX = position.x;
-        float eyeY = position.y;
-        float eyeZ = position.z;
-        float upX = up.x;
-        float upY = up.y;
-        float upZ = up.z;
-
-        float[] forward = {centerX - eyeX, centerY - eyeY, centerZ - eyeZ};
-        float[] up = {upX, upY, upZ};
-
-        float forwardLength = (float) Math.sqrt(forward[0] * forward[0] + forward[1] * forward[1] + forward[2] * forward[2]);
-        forward[0] /= forwardLength;
-        forward[1] /= forwardLength;
-        forward[2] /= forwardLength;
-
-        float[] side = {
-                forward[1] * up[2] - forward[2] * up[1],
-                forward[2] * up[0] - forward[0] * up[2],
-                forward[0] * up[1] - forward[1] * up[0]
-        };
-
-        up[0] = side[1] * forward[2] - side[2] * forward[1];
-        up[1] = side[2] * forward[0] - side[0] * forward[2];
-        up[2] = side[0] * forward[1] - side[1] * forward[0];
-
-        float[] mat = {
-                side[0], up[0], -forward[0], 0,
-                side[1], up[1], -forward[1], 0,
-                side[2], up[2], -forward[2], 0,
-                0,       0,     0,            1
-        };
-
-        glLoadMatrixf(mat);
-        glTranslatef(-eyeX, -eyeY, -eyeZ);
-    }
-
     public void processKeyboard(boolean[] keys, float deltaTime) {
         float velocity = movementSpeed * deltaTime;
         if (keys[GLFW_KEY_LEFT_SHIFT]) {

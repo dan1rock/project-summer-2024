@@ -14,7 +14,7 @@ public class RenderMesh extends RenderObject{
     private float[] objectColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
-    private float ambient = 0.1f;
+    private float ambient = 0.2f;
     private float shininess = 32f;
 
     public RenderMesh(Mesh mesh, int shaderProgramID) {

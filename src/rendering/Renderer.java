@@ -103,10 +103,10 @@ public class Renderer {
         glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_DEPTH_TEST);
         glClearColor(135f / 255f, 206f / 255f, 235f / 255f, 0.0f);
-        setViewport(1920, 1080, 45.0f, 0.1f, 100.0f, Projection.Perspective);
+        setViewport(1920, 1080, 45.0f, 0.1f, 200.0f, Projection.Perspective);
 
         GLFW.glfwSetFramebufferSizeCallback(window, (win, width, height) -> {
-            setViewport(width, height, 45.0f, 0.1f, 100.0f, Projection.Perspective);
+            setViewport(width, height, 45.0f, 0.1f, 200.0f, Projection.Perspective);
         });
 
         glfwSetKeyCallback(window, new GLFWKeyCallback() {
@@ -199,8 +199,7 @@ public class Renderer {
         glLoadIdentity();
         processInput();
         viewPos = camera.position;
-        camera.gluLookAt();
-        //glLoadMatrixf(camera.getViewMatrix());
+        glLoadMatrixf(camera.getViewMatrix());
 
         for (RenderObject renderObject : renderObjects) {
             renderObject.Update(deltaTime);
@@ -208,8 +207,10 @@ public class Renderer {
 
         glPopMatrix();
 
-        angle += 30f * deltaTime;
-        if (angle > 360f) angle = 0f;
+        angle += 1f * deltaTime;
+        if (angle > 6.29f) angle = 0f;
+        lightPos.x = (float) Math.sin(angle) * 1000f;
+        lightPos.z = (float) Math.cos(angle) * 1000f;
     }
 
     private void processInput() {

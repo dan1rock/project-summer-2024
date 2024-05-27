@@ -1,5 +1,8 @@
 package src.utils;
 
+import static org.lwjgl.opengl.GL11.glLoadMatrixf;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+
 public class Matrix4f {
     public static float[] lookAt(Vector3f eye, Vector3f center, Vector3f up) {
         Vector3f f = new Vector3f(center).sub(eye).normalize();
@@ -8,10 +11,10 @@ public class Matrix4f {
         u = new Vector3f(s).cross(f);
 
         float[] result = new float[] {
-                s.x, u.x, -f.x, -s.dot(eye),
-                s.y, u.y, -f.y, -u.dot(eye),
-                s.z, u.z, -f.z, f.dot(eye),
-                0f, 0f, 0f, 1f,
+                s.x, u.x, -f.x, 0f,
+                s.y, u.y, -f.y, 0f,
+                s.z, u.z, -f.z, 0f,
+                -s.dot(eye), -u.dot(eye), f.dot(eye), 1f
         };
 
         return result;

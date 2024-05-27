@@ -65,9 +65,12 @@ public class Vector3f {
     }
 
     public Vector3f cross(Vector3f vector3f) {
-        x = y * vector3f.z - z * vector3f.y;
-        y = z * vector3f.x - x * vector3f.z;
-        z = x * vector3f.y - y * vector3f.x;
+        float x = this.y * vector3f.z - this.z * vector3f.y;
+        float y = this.z * vector3f.x - this.x * vector3f.z;
+        float z = this.x * vector3f.y - this.y * vector3f.x;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         return this;
     }
 
