@@ -16,6 +16,7 @@ public class Camera {
     private float yaw;
     private float pitch;
 
+    private float baseSpeed;
     private float movementSpeed;
     private float mouseSensitivity;
 
@@ -25,7 +26,8 @@ public class Camera {
         this.yaw = yaw;
         this.pitch = pitch;
         this.front = new Vector3f(0.0f, 0.0f, -1.0f);
-        this.movementSpeed = 2.5f;
+        this.baseSpeed = 5f;
+        this.movementSpeed = 5f;
         this.mouseSensitivity = 0.1f;
 
         updateCameraVectors();
@@ -39,6 +41,9 @@ public class Camera {
         float velocity = movementSpeed * deltaTime;
         if (keys[GLFW_KEY_LEFT_SHIFT]) {
             velocity *= 2f;
+            movementSpeed *= 1f + 0.5f * deltaTime;
+        } else {
+            movementSpeed = baseSpeed;
         }
         if (keys[GLFW_KEY_W]) {
             position.add(new Vector3f(front).mul(velocity));
@@ -77,9 +82,7 @@ public class Camera {
         front.normalize();
         this.front = front;
 
-        right = Vector3f.cross(front, worldUp);
-        right.normalize();
-        up = Vector3f.cross(right, front);
-        up.normalize();
+        right = Vector3f.cross(front, worldUp).normalize();
+        up = Vector3f.cross(right, front).normalize();
     }
 }

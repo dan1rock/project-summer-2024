@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class RenderMesh extends RenderObject{
     private final Mesh mesh;
     private int texture;
-    private float[] objectColor = new float[]{1f, 1f, 1f};
+    private float[] baseColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
     private float ambient = 0.2f;
@@ -46,16 +46,16 @@ public class RenderMesh extends RenderObject{
         this.shininess = shininess;
     }
 
-    public void setObjectColor(float[] color) {
-        objectColor[0] = color[0];
-        objectColor[1] = color[1];
-        objectColor[2] = color[2];
+    public void setBaseColor(float[] color) {
+        baseColor[0] = color[0];
+        baseColor[1] = color[1];
+        baseColor[2] = color[2];
     }
 
     public void setObjectColor(Vector3f color) {
-        objectColor[0] = color.x;
-        objectColor[1] = color.y;
-        objectColor[2] = color.z;
+        baseColor[0] = color.x;
+        baseColor[1] = color.y;
+        baseColor[2] = color.z;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class RenderMesh extends RenderObject{
         glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
         glUniform3fv(lightColorLoc, renderer.lightColor);
-        glUniform3fv(objectColorLoc, objectColor);
+        glUniform3fv(objectColorLoc, baseColor);
         glUniform1f(ambientStrengthLoc, ambient);
         glUniform1f(shininessLoc, shininess);
         glUniform1i(isTexturedLoc, isTextured ? 1 : 0);

@@ -18,7 +18,7 @@ public class PerlinNoise {
 
     public PerlinNoise(int octaves, float amplitude, float roughness) {
         this.seed = new Random().nextInt(1000000000);
-        System.out.println(seed);
+        System.out.println("Terrain seed: " + seed);
         this.octaves = octaves;
         this.amplitude = amplitude;
         this.roughness = roughness;

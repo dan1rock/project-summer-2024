@@ -97,7 +97,7 @@ public class Terrain extends Mesh {
     }
 
     private float[][] generateHeightMap(int width, int depth, float maxHeight) {
-        PerlinNoise perlinNoise = new PerlinNoise(10, 1f, 1f);
+        PerlinNoise perlinNoise = new PerlinNoise(2, 1f, 1f);
         float[][] heightMap = new float[width][depth];
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -120,17 +120,11 @@ public class Terrain extends Mesh {
             Vector3f edge1 = new Vector3f(v1).sub(v0);
             Vector3f edge2 = new Vector3f(v0).sub(v2);
 
-            Vector3f normal = Vector3f.cross(edge1, edge2);
-            normal.normalize();
-            normal.invert();
+            Vector3f normal = Vector3f.cross(edge1, edge2).normalize().invert();
 
             normals.get(index0).add(normal);
             normals.get(index1).add(normal);
             normals.get(index2).add(normal);
-        }
-
-        for (Vector3f normal : normals) {
-            normal.normalize();
         }
     }
 }

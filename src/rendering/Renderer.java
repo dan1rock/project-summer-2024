@@ -39,11 +39,12 @@ public class Renderer {
     }
 
     public static Renderer getInstance() {
-        if (instance == null) {
-            synchronized (Renderer.class) {
-                if (instance == null) {
-                    instance = new Renderer();
-                }
+        if (instance != null) {
+            return instance;
+        }
+        synchronized (Renderer.class) {
+            if (instance == null) {
+                instance = new Renderer();
             }
         }
         return instance;
