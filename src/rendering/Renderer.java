@@ -28,7 +28,7 @@ public class Renderer {
 
     public List<RenderObject> renderObjects = new ArrayList<>();
 
-    public Vector3f lightPos = new Vector3f(0f, 100f, 100f);
+    public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
     public Vector3f viewPos;
     public float[] lightColor = new float[]{1.0f, 1.0f, 1.0f};
 

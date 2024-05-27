@@ -47,12 +47,12 @@ public class Main {
 
         rabbit.position = new Vector3f(2f, 0f, 0f);
 
-        Terrain terrainMesh = new Terrain(1000,  1000, 10, 50f);
+        Terrain terrainMesh = new Terrain(500,  500, 10, 25f);
         RenderMesh terrain = new RenderMesh(terrainMesh, shaderProgramID);
-        terrain.scale = new Vector3f(0.5f, 0.5f, 0.5f);
         terrain.position = new Vector3f(-250f, 0f, -250f);
         terrain.setObjectColor(new Vector3f(0.05f, 0.7f, 0.4f));
         terrain.setTexture(grassTexture);
+        terrain.setAmbient(0.2f);
         renderer.renderObjects.add(terrain);
 
         RenderMesh base = new RenderMesh(baseMesh, shaderProgramID);
