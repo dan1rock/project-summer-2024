@@ -30,7 +30,7 @@ public class Main {
         try {
             penguinMesh.loadObj("./Meshes/penguin.obj");
             rabbitMesh.loadObj("./Meshes/rabbit.obj");
-            baseMesh.loadObj("./Meshes/base.obj");
+            baseMesh.loadObj("./Meshes/base.obj", true);
             penguinTexture = Texture.loadRGBTexture("./Textures/penguin.png");
             gradientTexture = Texture.loadRGBTexture("./Textures/256-gradient.png");
             grassTexture = Texture.loadRGBTexture("./Textures/grass.jpg");
@@ -60,7 +60,6 @@ public class Main {
         base.position = new Vector3f(0f, 0f, -10f);
         base.rotation = new Vector3f(0f, -90f, 0f);
         base.scale = new Vector3f(0.2f, 0.2f, 0.2f);
-        base.setAmbient(0.5f);
 
         renderer.renderObjects.add(rabbit);
         renderer.renderObjects.add(penguin);

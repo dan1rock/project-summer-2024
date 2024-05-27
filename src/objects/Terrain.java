@@ -122,7 +122,7 @@ public class Terrain extends Mesh {
 
             Vector3f normal = Vector3f.cross(edge1, edge2);
             normal.normalize();
-            normal = new Vector3f().sub(normal);
+            normal.invert();
 
             normals.get(index0).add(normal);
             normals.get(index1).add(normal);

@@ -19,6 +19,12 @@ public class Mesh {
     public int textureVboId;
     public int normalVboId;
     public int indexVboId;
+    private boolean invertNormals = false;
+
+    public void loadObj(String filename, boolean invertNormals) throws IOException {
+        this.invertNormals = invertNormals;
+        loadObj(filename);
+    }
 
     public void loadObj(String filename) throws IOException {
         List<Vector3f> vertices = new ArrayList<>();
@@ -44,7 +50,9 @@ public class Mesh {
                     float nx = Float.parseFloat(parts[1]);
                     float ny = Float.parseFloat(parts[2]);
                     float nz = Float.parseFloat(parts[3]);
-                    normals.add(new Vector3f(nx, ny, nz));
+                    Vector3f normal = new Vector3f(nx, ny, nz);
+                    if (invertNormals) normal.invert();
+                    normals.add(normal);
                     break;
                 case "vt":
                     float tx = Float.parseFloat(parts[1]);

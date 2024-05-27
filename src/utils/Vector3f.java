@@ -32,6 +32,13 @@ public class Vector3f {
         return this;
     }
 
+    public Vector3f invert() {
+        x = -x;
+        y = -y;
+        z = -z;
+        return this;
+    }
+
     public Vector3f mul(float value) {
         x *= value;
         y *= value;
