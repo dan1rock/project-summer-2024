@@ -31,6 +31,9 @@ public class Renderer {
     public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
     public Vector3f viewPos;
     public float[] lightColor = new float[]{1.0f, 1.0f, 1.0f};
+    public float[] fogColor = new float[]{0.5f, 0.5f, 0.5f};
+    public float fogStart = 100f;
+    public float fogEnd = 200f;
 
     private static Renderer instance;
 

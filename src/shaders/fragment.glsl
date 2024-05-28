@@ -3,6 +3,7 @@ in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 LightPos;
 in vec3 Normal;
+in vec4 ViewPos;
 
 out vec4 FragColor;
 
@@ -11,10 +12,13 @@ uniform sampler2D textureSampler;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
+uniform vec3 fogColor;
 
 uniform float ambientStrength;
 uniform float shininess;
 uniform float specularStrength;
+uniform float fogStart;
+uniform float fogEnd;
 
 uniform bool isTextured;
 
@@ -42,6 +46,14 @@ void main() {
     vec3 specular = specularStrength * spec * lightColor;
 
     // Combine all the lighting components
-    vec3 result = (ambient + diffuse + specular) * objectColor;
-    FragColor = vec4(result, 1.0) * texColor;
+    vec3 lighting = (ambient + diffuse + specular) * objectColor;
+    vec4 result = vec4(lighting, 1.0) * texColor;
+
+    // Calculate the fog factor
+    float distance = length(ViewPos.xyz);
+    float fogFactor = clamp((fogEnd - distance) / (fogEnd - fogStart), 0.0, 1.0);
+
+    vec3 finalColor = mix(fogColor, result.rgb, fogFactor);
+
+    FragColor = vec4(finalColor, result.a);
 }

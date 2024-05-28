@@ -100,6 +100,9 @@ public class RenderMesh extends RenderObject{
         int shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
         int specularStrengthLoc = glGetUniformLocation(shaderProgramID, "specularStrength");
         int isTexturedLoc = glGetUniformLocation(shaderProgramID, "isTextured");
+        int fogColorLoc = glGetUniformLocation(shaderProgramID, "fogColor");
+        int fogStartLoc = glGetUniformLocation(shaderProgramID, "fogStart");
+        int fogEndLoc = glGetUniformLocation(shaderProgramID, "fogEnd");
 
         glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
@@ -109,6 +112,9 @@ public class RenderMesh extends RenderObject{
         glUniform1f(shininessLoc, shininess);
         glUniform1f(specularStrengthLoc, specularStrength);
         glUniform1i(isTexturedLoc, isTextured ? 1 : 0);
+        glUniform3fv(fogColorLoc, renderer.fogColor);
+        glUniform1f(fogStartLoc, renderer.fogStart);
+        glUniform1f(fogEndLoc, renderer.fogEnd);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");
         int projLoc = glGetUniformLocation(shaderProgramID, "projection");

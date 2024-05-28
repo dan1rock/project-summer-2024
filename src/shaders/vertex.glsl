@@ -7,6 +7,7 @@ out vec2 TexCoord;
 out vec3 FragPos;
 out vec3 LightPos;
 out vec3 Normal;
+out vec4 ViewPos;
 
 uniform vec3 lightPos;
 uniform mat4 model;
@@ -17,5 +18,6 @@ void main() {
     FragPos = vec3(model * vec4(inPosition, 1.0));
     Normal = mat3(transpose(inverse(model))) * inNormal;
     TexCoord = inTexCoord;
+    ViewPos = model * vec4(inPosition, 1.0);
     LightPos = vec3(model * vec4(lightPos, 1.0));
 }
