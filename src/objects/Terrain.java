@@ -39,12 +39,13 @@ public class Terrain extends Mesh {
                 int bottomLeft = ((z + 1) * width) + x;
                 int bottomRight = bottomLeft + 1;
 
+                indices.add(topRight);
+                indices.add(bottomLeft);
                 indices.add(topLeft);
-                indices.add(bottomLeft);
-                indices.add(topRight);
-                indices.add(topRight);
-                indices.add(bottomLeft);
+
                 indices.add(bottomRight);
+                indices.add(bottomLeft);
+                indices.add(topRight);
             }
         }
 

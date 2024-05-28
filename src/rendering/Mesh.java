@@ -81,17 +81,30 @@ public class Mesh {
         FloatBuffer textureBuffer = BufferUtils.createFloatBuffer(textureIndices.size() * 2);
         FloatBuffer normalsBuffer = BufferUtils.createFloatBuffer(normalIndices.size() * 3);
 
-        for (Integer index : vertexIndices) {
-            Vector3f vertex = vertices.get(index);
+        int size = vertexIndices.size();
+
+        int index = size - 1;
+        int sign = -1;
+
+        if (invertNormals) {
+            sign = 1;
+            index = 0;
+        }
+
+        for (int i = 0; i < size; i++) {
+            int vertexIndex = vertexIndices.get(index);
+            Vector3f vertex = vertices.get(vertexIndex);
             verticesBuffer.put(vertex.x).put(vertex.y).put(vertex.z);
-        }
-        for (Integer index : textureIndices) {
-            Vector3f coord = textureCoords.get(index);
+
+            int textureIndex = textureIndices.get(index);
+            Vector3f coord = textureCoords.get(textureIndex);
             textureBuffer.put(coord.y).put(coord.x);
-        }
-        for (Integer index : normalIndices) {
-            Vector3f normal = normals.get(index);
+
+            int normalIndex = normalIndices.get(index);
+            Vector3f normal = normals.get(normalIndex);
             normalsBuffer.put(normal.x).put(normal.y).put(normal.z);
+
+            index += sign;
         }
         verticesBuffer.flip();
         textureBuffer.flip();

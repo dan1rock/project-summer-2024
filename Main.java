@@ -10,8 +10,6 @@ import src.utils.Vector3f;
 
 import java.io.IOException;
 
-import static org.lwjgl.opengl.GL20.*;
-
 public class Main {
     public static void main(String[] args) {
         Renderer renderer = Renderer.getInstance();

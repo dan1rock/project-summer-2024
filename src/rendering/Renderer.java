@@ -106,6 +106,8 @@ public class Renderer {
         glEnable(GL_LIGHT0);
         glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
         glClearColor(135f / 255f, 206f / 255f, 235f / 255f, 0.0f);
         setViewport(1920, 1080, 45.0f, 0.1f, 500.0f, Projection.Perspective);
 
