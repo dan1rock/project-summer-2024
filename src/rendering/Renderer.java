@@ -104,10 +104,10 @@ public class Renderer {
         glEnable(GL_COLOR_MATERIAL);
         glEnable(GL_DEPTH_TEST);
         glClearColor(135f / 255f, 206f / 255f, 235f / 255f, 0.0f);
-        setViewport(1920, 1080, 45.0f, 0.1f, 200.0f, Projection.Perspective);
+        setViewport(1920, 1080, 45.0f, 0.1f, 500.0f, Projection.Perspective);
 
         GLFW.glfwSetFramebufferSizeCallback(window, (win, width, height) -> {
-            setViewport(width, height, 45.0f, 0.1f, 200.0f, Projection.Perspective);
+            setViewport(width, height, 45.0f, 0.1f, 500.0f, Projection.Perspective);
         });
 
         glfwSetKeyCallback(window, new GLFWKeyCallback() {
@@ -175,7 +175,7 @@ public class Renderer {
 
             if (elapsedTime >= targetFrameTime) {
                 deltaTime = (currentTime - lastRenderTime) / 1000f;
-                Update(currentTime - lastRenderTime);
+                Update();
                 lastRenderTime = currentTime;
             } else {
                 try {
@@ -187,15 +187,15 @@ public class Renderer {
         }
     }
 
-    private void Update(long frameTime) {
+    private void Update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        drawScene(frameTime);
+        drawScene();
         GLFW.glfwSwapBuffers(window);
         GLFW.glfwPollEvents();
     }
 
     private float angle;
-    private void drawScene(long frameTime) {
+    private void drawScene() {
         glPushMatrix();
         glLoadIdentity();
         processInput();

@@ -14,8 +14,9 @@ public class RenderMesh extends RenderObject{
     private float[] baseColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
-    private float ambient = 0.2f;
+    private float ambient = 0.4f;
     private float shininess = 32f;
+    private float specularStrength = 0.5f;
 
     public RenderMesh(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
@@ -44,6 +45,10 @@ public class RenderMesh extends RenderObject{
 
     public void setShininess(float shininess) {
         this.shininess = shininess;
+    }
+
+    public void setSpecularStrength(float specularStrength) {
+        this.specularStrength = specularStrength;
     }
 
     public void setBaseColor(float[] color) {
@@ -93,6 +98,7 @@ public class RenderMesh extends RenderObject{
         int objectColorLoc = glGetUniformLocation(shaderProgramID, "objectColor");
         int ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
         int shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
+        int specularStrengthLoc = glGetUniformLocation(shaderProgramID, "specularStrength");
         int isTexturedLoc = glGetUniformLocation(shaderProgramID, "isTextured");
 
         glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
@@ -101,6 +107,7 @@ public class RenderMesh extends RenderObject{
         glUniform3fv(objectColorLoc, baseColor);
         glUniform1f(ambientStrengthLoc, ambient);
         glUniform1f(shininessLoc, shininess);
+        glUniform1f(specularStrengthLoc, specularStrength);
         glUniform1i(isTexturedLoc, isTextured ? 1 : 0);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");

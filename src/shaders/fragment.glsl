@@ -14,6 +14,7 @@ uniform vec3 objectColor;
 
 uniform float ambientStrength;
 uniform float shininess;
+uniform float specularStrength;
 
 uniform bool isTextured;
 
@@ -31,11 +32,10 @@ void main() {
     // Diffuse lighting
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(LightPos - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
+    float diff = (dot(norm, lightDir) + 0.5) / 1.5;
     vec3 diffuse = diff * lightColor;
 
     // Specular lighting
-    float specularStrength = 0.5;
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);

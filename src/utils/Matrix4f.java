@@ -1,8 +1,5 @@
 package src.utils;
 
-import static org.lwjgl.opengl.GL11.glLoadMatrixf;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-
 public class Matrix4f {
     public static float[] lookAt(Vector3f eye, Vector3f center, Vector3f up) {
         Vector3f f = new Vector3f(center).sub(eye).normalize();
