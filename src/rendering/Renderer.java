@@ -9,11 +9,14 @@ import src.objects.Camera;
 import src.utils.Projection;
 import src.utils.Vector3f;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Renderer {
     private static long window;
@@ -29,11 +32,20 @@ public class Renderer {
     public List<RenderObject> renderObjects = new ArrayList<>();
 
     public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
+    public float[] clipPlane = new float[]{0f, 1f, 0f, 0f};
     public Vector3f viewPos;
     public float[] lightColor = new float[]{1.0f, 1.0f, 1.0f};
     public float[] fogColor = new float[]{0.5f, 0.5f, 0.5f};
     public float fogStart = 100f;
     public float fogEnd = 200f;
+
+    public int reflectionTextureID;
+    public int reflectionDepthBufferID;
+    public int reflectionFrameBuffer;
+
+    public int refractionTextureID;
+    public int refractionDepthBufferID;
+    public int refractionFrameBuffer;
 
     private static Renderer instance;
 
@@ -110,6 +122,7 @@ public class Renderer {
         glCullFace(GL_FRONT);
         glClearColor(135f / 255f, 206f / 255f, 235f / 255f, 0.0f);
         setViewport(1920, 1080, 45.0f, 0.1f, 500.0f, Projection.Perspective);
+        initReflectionRefraction();
 
         GLFW.glfwSetFramebufferSizeCallback(window, (win, width, height) -> {
             setViewport(width, height, 45.0f, 0.1f, 500.0f, Projection.Perspective);
@@ -146,6 +159,16 @@ public class Renderer {
         });
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    private void initReflectionRefraction() {
+        reflectionTextureID = createFramebufferTexture(width, height);
+        reflectionDepthBufferID = createFramebufferDepthBuffer(width, height);
+        reflectionFrameBuffer = createFramebuffer(reflectionTextureID, reflectionDepthBufferID);
+
+        refractionTextureID = createFramebufferTexture(width, height);
+        refractionDepthBufferID = createFramebufferDepthBuffer(width, height);
+        refractionFrameBuffer = createFramebuffer(refractionTextureID, refractionDepthBufferID);
     }
 
     public void runMainLoop() {
@@ -192,34 +215,120 @@ public class Renderer {
         }
     }
 
+    private float angle;
     private void Update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        drawScene();
-        GLFW.glfwSwapBuffers(window);
-        GLFW.glfwPollEvents();
-    }
-
-    private float angle;
-    private void drawScene() {
-        glPushMatrix();
-        glLoadIdentity();
         processInput();
-        viewPos = camera.position;
-        glLoadMatrixf(camera.getViewMatrix());
-
         for (RenderObject renderObject : renderObjects) {
             renderObject.Update(deltaTime);
         }
 
-        glPopMatrix();
+        doReflectionPass();
+        doRefractionPass();
+        doMainRenderPass();
+        GLFW.glfwSwapBuffers(window);
+        GLFW.glfwPollEvents();
 
-        angle += 1f * deltaTime;
+        angle += deltaTime;
         if (angle > 6.29f) angle = 0f;
         lightPos.x = (float) Math.sin(angle) * 1000f;
         lightPos.z = (float) Math.cos(angle) * 1000f;
     }
 
+    private void doMainRenderPass() {
+        glPushMatrix();
+        glLoadIdentity();
+        viewPos = camera.position;
+
+        if (keys[GLFW_KEY_R]) {
+            glLoadMatrixf(camera.getReflectionMatrix());
+        } else {
+            glLoadMatrixf(camera.getViewMatrix());
+        }
+
+        for (RenderObject renderObject : renderObjects) {
+            renderObject.Render(false);
+        }
+
+        glPopMatrix();
+    }
+
+    private void doReflectionPass() {
+        glBindFramebuffer(GL_FRAMEBUFFER, reflectionFrameBuffer);
+        glPushMatrix();
+        glLoadIdentity();
+        viewPos = camera.position;
+
+        glLoadMatrixf(camera.getReflectionMatrix());
+
+        clipPlane[0] = 0f;
+        clipPlane[1] = 1f;
+        clipPlane[2] = 0f;
+        clipPlane[3] = 0f;
+        for (RenderObject renderObject : renderObjects) {
+            renderObject.Render(true);
+        }
+
+        glPopMatrix();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    private void doRefractionPass() {
+        glBindFramebuffer(GL_FRAMEBUFFER, refractionFrameBuffer);
+        glPushMatrix();
+        glLoadIdentity();
+        viewPos = camera.position;
+
+        glLoadMatrixf(camera.getViewMatrix());
+
+        clipPlane[0] = 0f;
+        clipPlane[1] = -1f;
+        clipPlane[2] = 0f;
+        clipPlane[3] = 0f;
+        for (RenderObject renderObject : renderObjects) {
+            renderObject.Render(true);
+        }
+
+        glPopMatrix();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
     private void processInput() {
         camera.processKeyboard(keys, deltaTime);
+    }
+
+    public int createFramebufferTexture(int width, int height) {
+        int textureID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, (ByteBuffer) null);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        return textureID;
+    }
+
+    public int createFramebufferDepthBuffer(int width, int height) {
+        int depthBuffer = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        return depthBuffer;
+    }
+
+    public int createFramebuffer(int textureID, int depthBufferID) {
+        int framebuffer = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferID);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            System.out.println("Framebuffer is not complete!");
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        return framebuffer;
     }
 }

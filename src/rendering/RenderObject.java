@@ -14,4 +14,5 @@ public abstract class RenderObject {
     }
 
     public abstract void Update(float deltaTime);
+    public abstract void Render(boolean clipPlane);
 }

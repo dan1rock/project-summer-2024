@@ -65,10 +65,11 @@ public class RenderMesh extends RenderObject{
 
     @Override
     public void Update(float deltaTime) {
-        Draw();
+
     }
 
-    public void Draw() {
+    @Override
+    public void Render(boolean clipPlane) {
         glEnable(GL_LIGHTING);
 
         if (isTextured) {

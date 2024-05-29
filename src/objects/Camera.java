@@ -36,6 +36,19 @@ public class Camera {
         return Matrix4f.lookAt(position, new Vector3f(position).add(front), up);
     }
 
+    public float[] getReflectionMatrix() {
+        Vector3f front = new Vector3f();
+        front.x = (float) Math.cos(Math.toRadians(yaw)) * (float) Math.cos(Math.toRadians(-pitch));
+        front.y = (float) Math.sin(Math.toRadians(-pitch));
+        front.z = (float) Math.sin(Math.toRadians(yaw)) * (float) Math.cos(Math.toRadians(-pitch));
+        front.normalize();
+        Vector3f right = Vector3f.cross(front, worldUp).normalize();
+        Vector3f up = Vector3f.cross(right, front).normalize();
+        Vector3f position = new Vector3f(this.position);
+        position.y = -position.y;
+        return Matrix4f.lookAt(position, new Vector3f(position).add(front), up);
+    }
+
     public void processKeyboard(boolean[] keys, float deltaTime) {
         float velocity = movementSpeed * deltaTime;
         if (keys[GLFW_KEY_LEFT_SHIFT]) {

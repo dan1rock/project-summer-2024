@@ -20,10 +20,11 @@ public class Cube extends RenderObject {
 
     @Override
     public void Update(float deltaTime) {
-        Draw();
+
     }
 
-    private void Draw() {
+    @Override
+    public void Render(boolean clipPlane) {
         float h = 1f;
 
         glPushMatrix();
