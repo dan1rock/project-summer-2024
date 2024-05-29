@@ -17,6 +17,8 @@ This project is graphics engine made by using Java and LWJGL library that contai
   * Terrain generation
   * Textured terrain rendering
   * Camera movement(mouse + keyboard)
+  * Fog rendering
+  * Water rendering(distortion + reflection + refraction)
 
 ## Examples
 
@@ -28,6 +30,9 @@ __Mesh rendering__
 
 __Terrain rendering__
 <img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/4.png">
+
+__Water rendering with refraction and reflection__
+<img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/5.png">
 
 ## How to use
 >All necessary libraries are in ``libs`` folder, linking of these libraries is required to run project
