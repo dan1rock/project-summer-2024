@@ -96,6 +96,7 @@ public class WaterRenderer extends RenderObject{
         glUseProgram(shaderProgramID);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");
+        int viewLoc = glGetUniformLocation(shaderProgramID, "view");
         int projectionLoc = glGetUniformLocation(shaderProgramID, "projection");
         int reflectionTextureLoc = glGetUniformLocation(shaderProgramID, "reflectionTexture");
         int refractionTextureLoc = glGetUniformLocation(shaderProgramID, "refractionTexture");
@@ -125,6 +126,7 @@ public class WaterRenderer extends RenderObject{
 
         glUniformMatrix4fv(modelLoc, false, modelMatrix);
         glUniformMatrix4fv(projectionLoc, false, projectionMatrix);
+        glUniformMatrix4fv(viewLoc, false, renderer.viewMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);

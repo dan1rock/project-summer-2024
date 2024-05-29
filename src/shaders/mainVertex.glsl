@@ -14,14 +14,15 @@ uniform bool useClipPlane;
 
 uniform vec3 lightPos;
 uniform mat4 model;
+uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
     if (useClipPlane) {
-        vec4 worldPosition = vec4(inPosition, 1.0);
+        vec4 worldPosition = model * vec4(inPosition, 1.0);
         gl_ClipDistance[0] = dot(worldPosition, clipPlane);
     }
-    gl_Position = projection * model * vec4(inPosition, 1.0);
+    gl_Position = projection * view * model * vec4(inPosition, 1.0);
     FragPos = vec3(model * vec4(inPosition, 1.0));
     Normal = mat3(transpose(inverse(model))) * inNormal;
     TexCoord = inTexCoord;

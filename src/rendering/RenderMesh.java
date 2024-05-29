@@ -104,6 +104,8 @@ public class RenderMesh extends RenderObject{
         int fogColorLoc = glGetUniformLocation(shaderProgramID, "fogColor");
         int fogStartLoc = glGetUniformLocation(shaderProgramID, "fogStart");
         int fogEndLoc = glGetUniformLocation(shaderProgramID, "fogEnd");
+        int clipPlaneLoc = glGetUniformLocation(shaderProgramID, "clipPlane");
+        int useClipPlaneLoc = glGetUniformLocation(shaderProgramID, "useClipPlane");
 
         glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
@@ -116,8 +118,11 @@ public class RenderMesh extends RenderObject{
         glUniform3fv(fogColorLoc, renderer.fogColor);
         glUniform1f(fogStartLoc, renderer.fogStart);
         glUniform1f(fogEndLoc, renderer.fogEnd);
+        glUniform4fv(clipPlaneLoc, renderer.clipPlane);
+        glUniform1i(useClipPlaneLoc, clipPlane ? 1 : 0);
 
         int modelLoc = glGetUniformLocation(shaderProgramID, "model");
+        int viewLoc = glGetUniformLocation(shaderProgramID, "view");
         int projLoc = glGetUniformLocation(shaderProgramID, "projection");
 
         float[] modelMatrix = new float[16];
@@ -128,6 +133,7 @@ public class RenderMesh extends RenderObject{
 
         glUniformMatrix4fv(modelLoc, false, modelMatrix);
         glUniformMatrix4fv(projLoc, false, projectionMatrix);
+        glUniformMatrix4fv(viewLoc, false, renderer.viewMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);

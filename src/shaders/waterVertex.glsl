@@ -12,10 +12,11 @@ out vec3 LightPos;
 
 uniform vec3 lightPos;
 uniform mat4 model;
+uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
-    FragPos = vec3(model * vec4(inPosition, 1.0));
+    FragPos = vec3(view * model * vec4(inPosition, 1.0));
     Normal = mat3(transpose(inverse(model))) * inNormal;
     TexCoord = inTexCoord;
 

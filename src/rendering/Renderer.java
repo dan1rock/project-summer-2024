@@ -29,6 +29,7 @@ public class Renderer {
     private float lastX = 400, lastY = 300;
     private boolean firstMouse = true;
 
+    public float[] viewMatrix = new float[16];
     public List<RenderObject> renderObjects = new ArrayList<>();
 
     public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
@@ -223,8 +224,10 @@ public class Renderer {
             renderObject.Update(deltaTime);
         }
 
+        glEnable(GL_CLIP_DISTANCE0);
         doReflectionPass();
         doRefractionPass();
+        glDisable(GL_CLIP_DISTANCE0);
         doMainRenderPass();
         GLFW.glfwSwapBuffers(window);
         GLFW.glfwPollEvents();
@@ -241,9 +244,9 @@ public class Renderer {
         viewPos = camera.position;
 
         if (keys[GLFW_KEY_R]) {
-            glLoadMatrixf(camera.getReflectionMatrix());
+            viewMatrix = camera.getReflectionMatrix();
         } else {
-            glLoadMatrixf(camera.getViewMatrix());
+            viewMatrix = camera.getViewMatrix();
         }
 
         for (RenderObject renderObject : renderObjects) {
@@ -264,7 +267,7 @@ public class Renderer {
         glLoadIdentity();
         viewPos = camera.position;
 
-        glLoadMatrixf(camera.getReflectionMatrix());
+        viewMatrix = camera.getReflectionMatrix();
 
         clipPlane[0] = 0f;
         clipPlane[1] = 1f;
@@ -288,7 +291,7 @@ public class Renderer {
         glLoadIdentity();
         viewPos = camera.position;
 
-        glLoadMatrixf(camera.getViewMatrix());
+        viewMatrix = camera.getViewMatrix();
 
         clipPlane[0] = 0f;
         clipPlane[1] = -1f;
