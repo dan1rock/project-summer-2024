@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class WaterRenderer extends RenderObject{
     private final Mesh mesh;
-    private int texture;
     private float[] baseColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
@@ -18,12 +17,20 @@ public class WaterRenderer extends RenderObject{
     private float shininess = 32f;
     private float specularStrength = 0.5f;
 
+    int modelLoc;
+    int reflectionTextureLoc;
+    int refractionTextureLoc;
+    int viewPosLoc;
+    int moveFactorLoc;
+
     public WaterRenderer(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
         this.shaderProgramID = shaderProgramID;
         this.position = new Vector3f(0f, 0f, 0f);
         this.rotation = new Vector3f(0f, 0f, 0f);
         this.scale = new Vector3f(1f, 1f, 1f);
+
+        getShaderLocations();
     }
 
     public WaterRenderer(Mesh mesh, int shaderProgramID, Vector3f position, Vector3f rotation, Vector3f scale) {
@@ -32,11 +39,16 @@ public class WaterRenderer extends RenderObject{
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
+
+        getShaderLocations();
     }
 
-    public void setTexture(int textureID) {
-        texture = textureID;
-        isTextured = true;
+    private void getShaderLocations() {
+        modelLoc = glGetUniformLocation(shaderProgramID, "model");
+        reflectionTextureLoc = glGetUniformLocation(shaderProgramID, "reflectionTexture");
+        refractionTextureLoc = glGetUniformLocation(shaderProgramID, "refractionTexture");
+        viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
+        moveFactorLoc = glGetUniformLocation(shaderProgramID, "moveFactor");
     }
 
     public void setAmbient(float ambient) {
@@ -73,17 +85,7 @@ public class WaterRenderer extends RenderObject{
         if (clipPlane) return;
 
         glEnable(GL_LIGHTING);
-
-        if (isTextured) {
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        }
-        else {
-            glDisable(GL_TEXTURE_2D);
-        }
+        glDisable(GL_TEXTURE_2D);
 
         glPushMatrix();
 
@@ -95,18 +97,8 @@ public class WaterRenderer extends RenderObject{
 
         glUseProgram(shaderProgramID);
 
-        int modelLoc = glGetUniformLocation(shaderProgramID, "model");
-        int viewLoc = glGetUniformLocation(shaderProgramID, "view");
-        int projectionLoc = glGetUniformLocation(shaderProgramID, "projection");
-        int reflectionTextureLoc = glGetUniformLocation(shaderProgramID, "reflectionTexture");
-        int refractionTextureLoc = glGetUniformLocation(shaderProgramID, "refractionTexture");
-        int lightPosLoc = glGetUniformLocation(shaderProgramID, "lightPos");
-        int viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
-        int moveFactorLoc = glGetUniformLocation(shaderProgramID, "moveFactor");
-
         float moveFactor = 0.0f;
 
-        glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
         glUniform1f(moveFactorLoc, moveFactor);
 
@@ -119,14 +111,10 @@ public class WaterRenderer extends RenderObject{
         glUniform1i(refractionTextureLoc, 1);
 
         float[] modelMatrix = new float[16];
-        float[] projectionMatrix = new float[16];
 
         glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
-        glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
 
         glUniformMatrix4fv(modelLoc, false, modelMatrix);
-        glUniformMatrix4fv(projectionLoc, false, projectionMatrix);
-        glUniformMatrix4fv(viewLoc, false, renderer.viewMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
@@ -163,8 +151,5 @@ public class WaterRenderer extends RenderObject{
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
-
-        // Optionally, reset the active texture unit to GL_TEXTURE0
-        glActiveTexture(GL_TEXTURE0);
     }
 }

@@ -29,9 +29,11 @@ __Mesh rendering__
 <img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/3.png">
 
 __Terrain rendering__
+
 <img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/4.png">
 
 __Water rendering with refraction and reflection__
+
 <img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/5.png">
 
 ## How to use

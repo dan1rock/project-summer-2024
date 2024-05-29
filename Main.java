@@ -15,10 +15,12 @@ public class Main {
         String mainVertexShader = FileUtils.readFileAsString("src/shaders/mainVertex.glsl");
         String mainFragmentShader = FileUtils.readFileAsString("src/shaders/mainFragment.glsl");
         int mainShaderProgramID = ShaderUtils.createShaderProgram(mainVertexShader, mainFragmentShader);
+        renderer.shaders.add(mainShaderProgramID);
 
         String waterVertexShader = FileUtils.readFileAsString("src/shaders/waterVertex.glsl");
         String waterFragmentShader = FileUtils.readFileAsString("src/shaders/waterFragment.glsl");
         int waterShaderProgramID = ShaderUtils.createShaderProgram(waterVertexShader, waterFragmentShader);
+        renderer.shaders.add(waterShaderProgramID);
 
         Mesh penguinMesh = new Mesh();
         Mesh rabbitMesh = new Mesh();

@@ -31,6 +31,7 @@ public class Renderer {
 
     public float[] viewMatrix = new float[16];
     public List<RenderObject> renderObjects = new ArrayList<>();
+    public List<Integer> shaders = new ArrayList<>();
 
     public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
     public float[] clipPlane = new float[]{0f, 1f, 0f, 0f};
@@ -249,6 +250,8 @@ public class Renderer {
             viewMatrix = camera.getViewMatrix();
         }
 
+        updateShaders();
+
         for (RenderObject renderObject : renderObjects) {
             renderObject.Render(false);
         }
@@ -268,6 +271,8 @@ public class Renderer {
         viewPos = camera.position;
 
         viewMatrix = camera.getReflectionMatrix();
+
+        updateShaders();
 
         clipPlane[0] = 0f;
         clipPlane[1] = 1f;
@@ -293,6 +298,8 @@ public class Renderer {
 
         viewMatrix = camera.getViewMatrix();
 
+        updateShaders();
+
         clipPlane[0] = 0f;
         clipPlane[1] = -1f;
         clipPlane[2] = 0f;
@@ -308,6 +315,21 @@ public class Renderer {
 
     private void processInput() {
         camera.processKeyboard(keys, deltaTime);
+    }
+
+    private void updateShaders() {
+        float[] projectionMatrix = new float[16];
+        glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
+        for (Integer shader : shaders) {
+            glUseProgram(shader);
+            int viewLoc = glGetUniformLocation(shader, "view");
+            int projectionLoc = glGetUniformLocation(shader, "projection");
+            int lightPosLoc = glGetUniformLocation(shader, "lightPos");
+
+            glUniformMatrix4fv(viewLoc, false, viewMatrix);
+            glUniformMatrix4fv(projectionLoc, false, projectionMatrix);
+            glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+        }
     }
 
     public int createFramebufferTexture(int width, int height) {

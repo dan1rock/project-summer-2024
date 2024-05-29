@@ -18,12 +18,28 @@ public class RenderMesh extends RenderObject{
     private float shininess = 32f;
     private float specularStrength = 0.5f;
 
+    int modelLoc;
+    int viewPosLoc;
+    int lightColorLoc;
+    int objectColorLoc;
+    int ambientStrengthLoc;
+    int shininessLoc;
+    int specularStrengthLoc;
+    int isTexturedLoc;
+    int fogColorLoc;
+    int fogStartLoc;
+    int fogEndLoc;
+    int clipPlaneLoc;
+    int useClipPlaneLoc;
+
     public RenderMesh(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
         this.shaderProgramID = shaderProgramID;
         this.position = new Vector3f(0f, 0f, 0f);
         this.rotation = new Vector3f(0f, 0f, 0f);
         this.scale = new Vector3f(1f, 1f, 1f);
+
+        getShaderLocations();
     }
 
     public RenderMesh(Mesh mesh, int shaderProgramID, Vector3f position, Vector3f rotation, Vector3f scale) {
@@ -32,6 +48,24 @@ public class RenderMesh extends RenderObject{
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
+
+        getShaderLocations();
+    }
+
+    private void getShaderLocations() {
+        modelLoc = glGetUniformLocation(shaderProgramID, "model");
+        viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
+        lightColorLoc = glGetUniformLocation(shaderProgramID, "lightColor");
+        objectColorLoc = glGetUniformLocation(shaderProgramID, "objectColor");
+        ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
+        shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
+        specularStrengthLoc = glGetUniformLocation(shaderProgramID, "specularStrength");
+        isTexturedLoc = glGetUniformLocation(shaderProgramID, "isTextured");
+        fogColorLoc = glGetUniformLocation(shaderProgramID, "fogColor");
+        fogStartLoc = glGetUniformLocation(shaderProgramID, "fogStart");
+        fogEndLoc = glGetUniformLocation(shaderProgramID, "fogEnd");
+        clipPlaneLoc = glGetUniformLocation(shaderProgramID, "clipPlane");
+        useClipPlaneLoc = glGetUniformLocation(shaderProgramID, "useClipPlane");
     }
 
     public void setTexture(int textureID) {
@@ -93,21 +127,6 @@ public class RenderMesh extends RenderObject{
 
         glUseProgram(shaderProgramID);
 
-        int lightPosLoc = glGetUniformLocation(shaderProgramID, "lightPos");
-        int viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
-        int lightColorLoc = glGetUniformLocation(shaderProgramID, "lightColor");
-        int objectColorLoc = glGetUniformLocation(shaderProgramID, "objectColor");
-        int ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
-        int shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
-        int specularStrengthLoc = glGetUniformLocation(shaderProgramID, "specularStrength");
-        int isTexturedLoc = glGetUniformLocation(shaderProgramID, "isTextured");
-        int fogColorLoc = glGetUniformLocation(shaderProgramID, "fogColor");
-        int fogStartLoc = glGetUniformLocation(shaderProgramID, "fogStart");
-        int fogEndLoc = glGetUniformLocation(shaderProgramID, "fogEnd");
-        int clipPlaneLoc = glGetUniformLocation(shaderProgramID, "clipPlane");
-        int useClipPlaneLoc = glGetUniformLocation(shaderProgramID, "useClipPlane");
-
-        glUniform3f(lightPosLoc, renderer.lightPos.x, renderer.lightPos.y, renderer.lightPos.z);
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
         glUniform3fv(lightColorLoc, renderer.lightColor);
         glUniform3fv(objectColorLoc, baseColor);
@@ -121,19 +140,11 @@ public class RenderMesh extends RenderObject{
         glUniform4fv(clipPlaneLoc, renderer.clipPlane);
         glUniform1i(useClipPlaneLoc, clipPlane ? 1 : 0);
 
-        int modelLoc = glGetUniformLocation(shaderProgramID, "model");
-        int viewLoc = glGetUniformLocation(shaderProgramID, "view");
-        int projLoc = glGetUniformLocation(shaderProgramID, "projection");
-
         float[] modelMatrix = new float[16];
-        float[] projectionMatrix = new float[16];
 
         glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
-        glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
 
         glUniformMatrix4fv(modelLoc, false, modelMatrix);
-        glUniformMatrix4fv(projLoc, false, projectionMatrix);
-        glUniformMatrix4fv(viewLoc, false, renderer.viewMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
