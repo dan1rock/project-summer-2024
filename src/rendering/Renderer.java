@@ -255,6 +255,11 @@ public class Renderer {
 
     private void doReflectionPass() {
         glBindFramebuffer(GL_FRAMEBUFFER, reflectionFrameBuffer);
+
+        glViewport(0, 0, width, height);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         glPushMatrix();
         glLoadIdentity();
         viewPos = camera.position;
@@ -275,6 +280,10 @@ public class Renderer {
 
     private void doRefractionPass() {
         glBindFramebuffer(GL_FRAMEBUFFER, refractionFrameBuffer);
+        glViewport(0, 0, width, height);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         glPushMatrix();
         glLoadIdentity();
         viewPos = camera.position;
@@ -286,6 +295,7 @@ public class Renderer {
         clipPlane[2] = 0f;
         clipPlane[3] = 0f;
         for (RenderObject renderObject : renderObjects) {
+            if (renderObject.getClass().isInstance(WaterRenderer.class)) continue;
             renderObject.Render(true);
         }
 
