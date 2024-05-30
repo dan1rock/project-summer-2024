@@ -1,5 +1,6 @@
 import src.objects.Camera;
 import src.objects.Terrain;
+import src.objects.Water;
 import src.rendering.*;
 import src.utils.FileUtils;
 import src.utils.ShaderUtils;
@@ -58,8 +59,8 @@ public class Main {
         terrain.setAmbient(0.6f);
         terrain.setSpecularStrength(0f);
         renderer.renderObjects.add(terrain);
-        terrainMesh = new Terrain(500,  500, 0, 25f);
-        WaterRenderer water = new WaterRenderer(terrainMesh, waterShaderProgramID);
+        Water waterMesh = new Water(500,  500);
+        WaterRenderer water = new WaterRenderer(waterMesh, waterShaderProgramID);
         water.position = new Vector3f(-250f, 0f, -250f);
         renderer.renderObjects.add(water);
 

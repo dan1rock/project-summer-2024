@@ -9,7 +9,9 @@ out vec3 Normal;
 out vec2 TexCoord;
 out vec4 RealCoord;
 out vec3 LightPos;
+out vec3 ViewPos;
 
+uniform vec3 viewPos;
 uniform vec3 lightPos;
 uniform mat4 model;
 uniform mat4 view;
@@ -22,5 +24,6 @@ void main() {
 
     RealCoord = projection * vec4(FragPos, 1.0);
     LightPos = vec3(model * vec4(lightPos, 1.0));
+    ViewPos = vec3(view * vec4(viewPos, 1.0));
     gl_Position = RealCoord;
 }

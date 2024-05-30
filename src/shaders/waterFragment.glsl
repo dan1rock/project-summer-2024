@@ -5,12 +5,12 @@ in vec3 Normal;
 in vec2 TexCoord;
 in vec4 RealCoord;
 in vec3 LightPos;
+in vec3 ViewPos;
 
 out vec4 FragColor;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
-uniform vec3 viewPos;
 uniform float moveFactor;
 
 const float waveStrength = 0.02;
@@ -31,7 +31,7 @@ void main() {
     vec4 refractionColor = texture(refractionTexture, refractionTexCoords);
 
     // Mix reflection and refraction
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 viewDir = normalize(ViewPos - FragPos);
     float fresnelFactor = dot(viewDir, Normal);
     fresnelFactor = clamp(fresnelFactor, 0.0, 1.0);
     fresnelFactor = pow(fresnelFactor, 3.0);

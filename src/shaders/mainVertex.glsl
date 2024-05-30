@@ -26,6 +26,6 @@ void main() {
     FragPos = vec3(model * vec4(inPosition, 1.0));
     Normal = mat3(transpose(inverse(model))) * inNormal;
     TexCoord = inTexCoord;
-    ViewPos = model * vec4(inPosition, 1.0);
+    ViewPos = view * model * vec4(inPosition, 1.0);
     LightPos = vec3(model * vec4(lightPos, 1.0));
 }
