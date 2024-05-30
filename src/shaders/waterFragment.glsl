@@ -4,6 +4,7 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoord;
 in vec4 RealCoord;
+in vec4 GridCoord;
 in vec3 LightPos;
 in vec3 ViewPos;
 
@@ -24,7 +25,8 @@ vec2 clipSpaceToTexCoords(vec4 clipSpace) {
 void main() {
     vec2 finalTexCoords = TexCoord;
     vec2 refractionTexCoords = clipSpaceToTexCoords(RealCoord);
-    vec2 reflectionTexCoords = vec2(refractionTexCoords.x, 1.0 - refractionTexCoords.y);
+    vec2 reflectionTexCoords = clipSpaceToTexCoords(GridCoord);
+    reflectionTexCoords = vec2(reflectionTexCoords.x, 1.0 - reflectionTexCoords.y);
 
     // Sample reflection and refraction textures
     vec4 reflectionColor = texture(reflectionTexture, reflectionTexCoords);

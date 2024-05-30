@@ -16,12 +16,14 @@ public class WaterRenderer extends RenderObject{
     private float ambient = 0.4f;
     private float shininess = 32f;
     private float specularStrength = 0.5f;
+    private float localTime = 0f;
 
     int modelLoc;
     int reflectionTextureLoc;
     int refractionTextureLoc;
     int viewPosLoc;
     int moveFactorLoc;
+    int waveTimeLoc;
 
     public WaterRenderer(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
@@ -49,6 +51,7 @@ public class WaterRenderer extends RenderObject{
         refractionTextureLoc = glGetUniformLocation(shaderProgramID, "refractionTexture");
         viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
         moveFactorLoc = glGetUniformLocation(shaderProgramID, "moveFactor");
+        waveTimeLoc = glGetUniformLocation(shaderProgramID, "waveTime");
     }
 
     public void setAmbient(float ambient) {
@@ -77,7 +80,7 @@ public class WaterRenderer extends RenderObject{
 
     @Override
     public void Update(float deltaTime) {
-
+        localTime += deltaTime;
     }
 
     @Override
@@ -101,6 +104,7 @@ public class WaterRenderer extends RenderObject{
 
         glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
         glUniform1f(moveFactorLoc, moveFactor);
+        glUniform1f(waveTimeLoc, localTime * 0.1f);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, renderer.reflectionTextureID);
