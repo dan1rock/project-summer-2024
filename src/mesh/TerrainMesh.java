@@ -1,7 +1,6 @@
-package src.objects;
+package src.mesh;
 
 import org.lwjgl.BufferUtils;
-import src.rendering.Mesh;
 import src.utils.PerlinNoise;
 import src.utils.Vector3f;
 
@@ -12,14 +11,14 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 
-public class Terrain extends Mesh {
-    public Terrain(int width, int depth, float maxHeight, float textureScale) {
+public class TerrainMesh extends Mesh {
+    public TerrainMesh(int width, int depth, float maxHeight, float heightMapScale, float textureScale) {
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Vector3f> textureCoords = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
 
-        float[][] heightMap = generateHeightMap(width, depth, maxHeight);
+        float[][] heightMap = generateHeightMap(width, depth, maxHeight, heightMapScale);
 
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -97,12 +96,12 @@ public class Terrain extends Mesh {
         numIndices = indices.size();
     }
 
-    private float[][] generateHeightMap(int width, int depth, float maxHeight) {
+    private float[][] generateHeightMap(int width, int depth, float maxHeight, float scale) {
         PerlinNoise perlinNoise = new PerlinNoise(2, 1f, 1f);
         float[][] heightMap = new float[width][depth];
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
-                heightMap[x][z] = perlinNoise.getPerlinNoise(x * 0.1f, z * 0.1f) * maxHeight;
+                heightMap[x][z] = perlinNoise.getPerlinNoise(x * scale, z * scale) * maxHeight;
             }
         }
         return heightMap;

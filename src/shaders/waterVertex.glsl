@@ -2,10 +2,6 @@
 
 const float PI = 3.1415926535897932384626433832795;
 
-const float waveLength = 20.0;
-const float waveAmplitude = 0.1;
-const float shineDamper = 20.0;
-
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inTexCoord;
 layout(location = 2) in vec3 inNormal;
@@ -24,6 +20,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float waveTime;
+uniform float waveLength;
+uniform float waveAmplitude;
 
 vec3 calcNormal(vec3 vertex0, vec3 vertex1, vec3 vertex2){
     vec3 tangent = vertex1 - vertex0;
@@ -38,9 +36,10 @@ float generateOffset(float x, float z, float val1, float val2){
 }
 
 vec3 applyDistortion(vec3 vertex){
-    float xDistortion = generateOffset(vertex.x * 0.1, vertex.z * 0.1, 0.2, 0.1);
-    float yDistortion = generateOffset(vertex.x * 0.1, vertex.z * 0.1, 0.1, 0.3);
-    float zDistortion = generateOffset(vertex.x * 0.1, vertex.z * 0.1, 0.15, 0.2);
+    float scale = 0.02;
+    float xDistortion = generateOffset(vertex.x * scale, vertex.z * scale, 0.2, 0.1);
+    float yDistortion = generateOffset(vertex.x * scale, vertex.z * scale, 0.1, 0.3);
+    float zDistortion = generateOffset(vertex.x * scale, vertex.z * scale, 0.15, 0.2);
     return vertex + vec3(xDistortion, yDistortion, zDistortion);
 }
 
@@ -59,7 +58,7 @@ void main() {
 
     RealCoord = projection * view * model * vec4(currentVertex, 1.0);
 
-    FragPos = vec3(view * model * vec4(inPosition, 1.0));
+    FragPos = vec3(model * vec4(inPosition, 1.0));
     TexCoord = inTexCoord;
 
     LightPos = vec3(model * vec4(lightPos, 1.0));

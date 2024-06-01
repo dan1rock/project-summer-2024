@@ -1,6 +1,7 @@
 package src.rendering;
 
 import org.lwjgl.opengl.GL11;
+import src.mesh.Mesh;
 import src.utils.Color;
 import src.utils.Vector3f;
 
@@ -8,14 +9,16 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
-public class WaterRenderer extends RenderObject{
+public class WaterRenderer extends Renderer {
     private final Mesh mesh;
     private float[] baseColor = new float[]{1f, 1f, 1f};
     private final int shaderProgramID;
     private boolean isTextured = false;
-    private float ambient = 0.4f;
+    private float ambient = 0.8f;
     private float shininess = 32f;
     private float specularStrength = 0.5f;
+    private float waveLength = 20f;
+    private float waveAmplitude = 0.5f;
     private float localTime = 0f;
 
     int modelLoc;
@@ -24,6 +27,11 @@ public class WaterRenderer extends RenderObject{
     int viewPosLoc;
     int moveFactorLoc;
     int waveTimeLoc;
+    int ambientStrengthLoc;
+    int shininessLoc;
+    int specularStrengthLoc;
+    int waveLengthLoc;
+    int waveAmplitudeLoc;
 
     public WaterRenderer(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
@@ -52,6 +60,11 @@ public class WaterRenderer extends RenderObject{
         viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
         moveFactorLoc = glGetUniformLocation(shaderProgramID, "moveFactor");
         waveTimeLoc = glGetUniformLocation(shaderProgramID, "waveTime");
+        ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
+        shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
+        specularStrengthLoc = glGetUniformLocation(shaderProgramID, "specularStrength");
+        waveLengthLoc = glGetUniformLocation(shaderProgramID, "waveLength");
+        waveAmplitudeLoc = glGetUniformLocation(shaderProgramID, "waveAmplitude");
     }
 
     public void setAmbient(float ambient) {
@@ -64,6 +77,14 @@ public class WaterRenderer extends RenderObject{
 
     public void setSpecularStrength(float specularStrength) {
         this.specularStrength = specularStrength;
+    }
+
+    public void setWaveLength(float waveLength) {
+        this.waveLength = waveLength;
+    }
+
+    public void setWaveAmplitude(float waveAmplitude) {
+        this.waveAmplitude = waveAmplitude;
     }
 
     public void setBaseColor(float[] color) {
@@ -102,16 +123,21 @@ public class WaterRenderer extends RenderObject{
 
         float moveFactor = 0.0f;
 
-        glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
+        glUniform3f(viewPosLoc, renderEngine.viewPos.x, renderEngine.viewPos.y, renderEngine.viewPos.z);
         glUniform1f(moveFactorLoc, moveFactor);
         glUniform1f(waveTimeLoc, localTime * 0.1f);
+        glUniform1f(ambientStrengthLoc, ambient);
+        glUniform1f(shininessLoc, shininess);
+        glUniform1f(specularStrengthLoc, specularStrength);
+        glUniform1f(waveLengthLoc, waveLength);
+        glUniform1f(waveAmplitudeLoc, waveAmplitude);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, renderer.reflectionTextureID);
+        glBindTexture(GL_TEXTURE_2D, renderEngine.reflectionTextureID);
         glUniform1i(reflectionTextureLoc, 0);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, renderer.refractionTextureID);
+        glBindTexture(GL_TEXTURE_2D, renderEngine.refractionTextureID);
         glUniform1i(refractionTextureLoc, 1);
 
         float[] modelMatrix = new float[16];

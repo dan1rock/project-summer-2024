@@ -1,6 +1,7 @@
+import src.mesh.Mesh;
 import src.objects.Camera;
-import src.objects.Terrain;
-import src.objects.Water;
+import src.mesh.TerrainMesh;
+import src.mesh.WaterMesh;
 import src.rendering.*;
 import src.utils.FileUtils;
 import src.utils.ShaderUtils;
@@ -10,18 +11,18 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Renderer renderer = Renderer.getInstance();
-        renderer.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);
+        RenderEngine renderEngine = RenderEngine.getInstance();
+        renderEngine.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);
 
         String mainVertexShader = FileUtils.readFileAsString("src/shaders/mainVertex.glsl");
         String mainFragmentShader = FileUtils.readFileAsString("src/shaders/mainFragment.glsl");
         int mainShaderProgramID = ShaderUtils.createShaderProgram(mainVertexShader, mainFragmentShader);
-        renderer.shaders.add(mainShaderProgramID);
+        renderEngine.shaders.add(mainShaderProgramID);
 
         String waterVertexShader = FileUtils.readFileAsString("src/shaders/waterVertex.glsl");
         String waterFragmentShader = FileUtils.readFileAsString("src/shaders/waterFragment.glsl");
         int waterShaderProgramID = ShaderUtils.createShaderProgram(waterVertexShader, waterFragmentShader);
-        renderer.shaders.add(waterShaderProgramID);
+        renderEngine.shaders.add(waterShaderProgramID);
 
         Mesh penguinMesh = new Mesh();
         Mesh rabbitMesh = new Mesh();
@@ -43,37 +44,37 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        RenderMesh penguin = new RenderMesh(penguinMesh, mainShaderProgramID);
-        RenderMesh rabbit = new RenderMesh(rabbitMesh, mainShaderProgramID);
+        MeshRenderer penguin = new MeshRenderer(penguinMesh, mainShaderProgramID);
+        MeshRenderer rabbit = new MeshRenderer(rabbitMesh, mainShaderProgramID);
         penguin.setTexture(penguinTexture);
         rabbit.setTexture(gradientTexture);
         penguin.scale.mul(3f);
 
         rabbit.position = new Vector3f(2f, 0f, 0f);
 
-        Terrain terrainMesh = new Terrain(500,  500, 10, 25f);
-        RenderMesh terrain = new RenderMesh(terrainMesh, mainShaderProgramID);
+        TerrainMesh terrainMesh = new TerrainMesh(500,  500, 20, 0.05f, 25f);
+        MeshRenderer terrain = new MeshRenderer(terrainMesh, mainShaderProgramID);
         terrain.position = new Vector3f(-250f, -0f, -250f);
         terrain.setObjectColor(new Vector3f(0.05f, 0.7f, 0.4f));
         terrain.setTexture(grassTexture);
         terrain.setAmbient(0.6f);
         terrain.setSpecularStrength(0f);
-        renderer.renderObjects.add(terrain);
-        Water waterMesh = new Water(500,  500);
+        renderEngine.renderers.add(terrain);
+        WaterMesh waterMesh = new WaterMesh(500,  500);
         WaterRenderer water = new WaterRenderer(waterMesh, waterShaderProgramID);
         water.position = new Vector3f(-250f, 0f, -250f);
-        renderer.renderObjects.add(water);
+        renderEngine.renderers.add(water);
 
-        RenderMesh base = new RenderMesh(baseMesh, mainShaderProgramID);
+        MeshRenderer base = new MeshRenderer(baseMesh, mainShaderProgramID);
         base.setTexture(baseTexture);
         base.position = new Vector3f(0f, 0f, -10f);
         base.rotation = new Vector3f(0f, -90f, 0f);
         base.scale = new Vector3f(0.2f, 0.2f, 0.2f);
 
-        renderer.renderObjects.add(rabbit);
-        renderer.renderObjects.add(penguin);
-        renderer.renderObjects.add(base);
+        renderEngine.renderers.add(rabbit);
+        renderEngine.renderers.add(penguin);
+        renderEngine.renderers.add(base);
 
-        renderer.runMainLoop();
+        renderEngine.runMainLoop();
     }
 }

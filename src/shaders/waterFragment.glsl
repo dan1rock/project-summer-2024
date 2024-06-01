@@ -13,6 +13,12 @@ out vec4 FragColor;
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform float moveFactor;
+uniform vec3 viewPos;
+uniform vec3 lightColor;
+
+uniform float ambientStrength;
+uniform float shininess;
+uniform float specularStrength;
 
 const float waveStrength = 0.02;
 
@@ -33,17 +39,27 @@ void main() {
     vec4 refractionColor = texture(refractionTexture, refractionTexCoords);
 
     // Mix reflection and refraction
-    vec3 viewDir = normalize(ViewPos - FragPos);
+    vec3 viewDir = normalize(viewPos - FragPos);
     float fresnelFactor = dot(viewDir, Normal);
     fresnelFactor = clamp(fresnelFactor, 0.0, 1.0);
     fresnelFactor = pow(fresnelFactor, 3.0);
 
     vec4 waterColor = mix(refractionColor, reflectionColor, 0.5);
 
-    // Calculate lighting
+    // Ambient lighting
+    vec3 ambient = ambientStrength * lightColor;
+
+    // Diffuse lighting
     vec3 lightDir = normalize(LightPos - FragPos);
     float diff = max(dot(Normal, lightDir), 0.0);
-    vec3 diffuse = diff * vec3(0.3, 0.3, 0.3);
+    vec3 diffuse = diff * lightColor;
 
-    FragColor = vec4(waterColor.rgb + diffuse, 1.0);
+    // Specular lighting
+    viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, Normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = specularStrength * spec * lightColor;
+
+
+    FragColor = vec4((ambient + diffuse + specular) * waterColor.rgb, 1.0);
 }

@@ -1,7 +1,6 @@
-package src.objects;
+package src.mesh;
 
 import org.lwjgl.BufferUtils;
-import src.rendering.Mesh;
 import src.utils.Vector3f;
 
 import java.nio.FloatBuffer;
@@ -12,8 +11,8 @@ import java.util.List;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 
-public class Water extends Mesh {
-    public Water(int width, int depth) {
+public class WaterMesh extends Mesh {
+    public WaterMesh(int width, int depth) {
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Vector3f> textureCoords = new ArrayList<>();

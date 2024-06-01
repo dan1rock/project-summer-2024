@@ -1,6 +1,7 @@
 package src.rendering;
 
 import org.lwjgl.opengl.GL11;
+import src.mesh.Mesh;
 import src.utils.Color;
 import src.utils.Vector3f;
 
@@ -8,7 +9,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
-public class RenderMesh extends RenderObject{
+public class MeshRenderer extends Renderer {
     private final Mesh mesh;
     private int texture;
     private float[] baseColor = new float[]{1f, 1f, 1f};
@@ -20,7 +21,6 @@ public class RenderMesh extends RenderObject{
 
     int modelLoc;
     int viewPosLoc;
-    int lightColorLoc;
     int objectColorLoc;
     int ambientStrengthLoc;
     int shininessLoc;
@@ -32,7 +32,7 @@ public class RenderMesh extends RenderObject{
     int clipPlaneLoc;
     int useClipPlaneLoc;
 
-    public RenderMesh(Mesh mesh, int shaderProgramID) {
+    public MeshRenderer(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
         this.shaderProgramID = shaderProgramID;
         this.position = new Vector3f(0f, 0f, 0f);
@@ -42,7 +42,7 @@ public class RenderMesh extends RenderObject{
         getShaderLocations();
     }
 
-    public RenderMesh(Mesh mesh, int shaderProgramID, Vector3f position, Vector3f rotation, Vector3f scale) {
+    public MeshRenderer(Mesh mesh, int shaderProgramID, Vector3f position, Vector3f rotation, Vector3f scale) {
         this.mesh = mesh;
         this.shaderProgramID = shaderProgramID;
         this.position = position;
@@ -55,7 +55,6 @@ public class RenderMesh extends RenderObject{
     private void getShaderLocations() {
         modelLoc = glGetUniformLocation(shaderProgramID, "model");
         viewPosLoc = glGetUniformLocation(shaderProgramID, "viewPos");
-        lightColorLoc = glGetUniformLocation(shaderProgramID, "lightColor");
         objectColorLoc = glGetUniformLocation(shaderProgramID, "objectColor");
         ambientStrengthLoc = glGetUniformLocation(shaderProgramID, "ambientStrength");
         shininessLoc = glGetUniformLocation(shaderProgramID, "shininess");
@@ -127,17 +126,16 @@ public class RenderMesh extends RenderObject{
 
         glUseProgram(shaderProgramID);
 
-        glUniform3f(viewPosLoc, renderer.viewPos.x, renderer.viewPos.y, renderer.viewPos.z);
-        glUniform3fv(lightColorLoc, renderer.lightColor);
+        glUniform3f(viewPosLoc, renderEngine.viewPos.x, renderEngine.viewPos.y, renderEngine.viewPos.z);
         glUniform3fv(objectColorLoc, baseColor);
         glUniform1f(ambientStrengthLoc, ambient);
         glUniform1f(shininessLoc, shininess);
         glUniform1f(specularStrengthLoc, specularStrength);
         glUniform1i(isTexturedLoc, isTextured ? 1 : 0);
-        glUniform3fv(fogColorLoc, renderer.fogColor);
-        glUniform1f(fogStartLoc, renderer.fogStart);
-        glUniform1f(fogEndLoc, renderer.fogEnd);
-        glUniform4fv(clipPlaneLoc, renderer.clipPlane);
+        glUniform3fv(fogColorLoc, renderEngine.fogColor);
+        glUniform1f(fogStartLoc, renderEngine.fogStart);
+        glUniform1f(fogEndLoc, renderEngine.fogEnd);
+        glUniform4fv(clipPlaneLoc, renderEngine.clipPlane);
         glUniform1i(useClipPlaneLoc, clipPlane ? 1 : 0);
 
         float[] modelMatrix = new float[16];

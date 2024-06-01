@@ -1,11 +1,11 @@
-package src.objects;
+package src.mesh;
 
-import src.rendering.RenderObject;
+import src.rendering.Renderer;
 import src.utils.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Cube extends RenderObject {
+public class Cube extends Renderer {
     public Cube() {
         this.position = new Vector3f(0f, 0f, 0f);
         this.rotation = new Vector3f(0f, 0f, 0f);

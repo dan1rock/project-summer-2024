@@ -1,4 +1,4 @@
-package src.rendering;
+package src.mesh;
 
 import org.lwjgl.BufferUtils;
 import src.utils.Vector3f;
