@@ -26,6 +26,7 @@ public class RenderEngine {
     protected int height;
     public Camera camera;
     public float deltaTime;
+    public int fps;
 
     private final boolean[] keys = new boolean[1024];
     private float lastX = 400, lastY = 300;
@@ -84,6 +85,10 @@ public class RenderEngine {
         overlayMatrix = Matrix4f.createOrthoMatrix(left, right, bottom, top, near, far);
     }
 
+    public void setVerticalSync(boolean enabled) {
+        GLFW.glfwSwapInterval(enabled ? 1 : 0);
+    }
+
     protected void setProjection(float fov, float near, float far, Projection projection) {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -121,6 +126,7 @@ public class RenderEngine {
         }
 
         GLFW.glfwMakeContextCurrent(window);
+        GLFW.glfwSwapInterval(1);
         GL.createCapabilities();
 
         float[] diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -185,7 +191,7 @@ public class RenderEngine {
     }
 
     public void runMainLoop() {
-        mainLoop(getMonitorFrameTime());
+        mainLoop(0);
 
         GLFW.glfwDestroyWindow(window);
         GLFW.glfwTerminate();
@@ -250,6 +256,22 @@ public class RenderEngine {
         if (angle > 6.29f) angle = 0f;
         lightPos.x = (float) Math.sin(angle) * 1000f;
         lightPos.z = (float) Math.cos(angle) * 1000f;
+
+        calculateFPS();
+    }
+
+    private long lastRecordedTime;
+    private int currentFPS;
+    private void calculateFPS() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastRecordedTime > 1000) {
+            fps = currentFPS;
+            currentFPS = 0;
+            lastRecordedTime = currentTime;
+            return;
+        }
+
+        currentFPS += 1;
     }
 
     private void doMainRenderPass() {
@@ -267,7 +289,7 @@ public class RenderEngine {
             renderer.Render(false);
         }
 
-        textRenderer.renderText("text", Color.Red, -8.5f, -4.5f, 0.5f);
+        textRenderer.renderText(String.valueOf(fps), Color.White, -8.5f, -4.5f, 0.5f);
     }
 
     private void doReflectionPass() {

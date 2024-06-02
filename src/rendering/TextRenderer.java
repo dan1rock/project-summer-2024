@@ -92,6 +92,8 @@ public class TextRenderer {
 
         glUniform3fv(textColorLoc, color);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glUniform1i(textureLoc, 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, fontTextureID);
@@ -168,6 +170,8 @@ public class TextRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glPopMatrix();
+
+        glDisable(GL_BLEND);
     }
 
     public void cleanup() {
