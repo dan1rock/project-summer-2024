@@ -12,6 +12,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         RenderEngine renderEngine = RenderEngine.getInstance();
+        renderEngine.OnCreate();
         renderEngine.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);
 
         String mainVertexShader = FileUtils.readFileAsString("src/shaders/mainVertex.glsl");

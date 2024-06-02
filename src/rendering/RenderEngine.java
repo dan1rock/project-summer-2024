@@ -6,6 +6,8 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import src.objects.Camera;
+import src.utils.Color;
+import src.utils.Matrix4f;
 import src.utils.Projection;
 import src.utils.Vector3f;
 
@@ -30,6 +32,7 @@ public class RenderEngine {
     private boolean firstMouse = true;
 
     public float[] viewMatrix = new float[16];
+    public float[] overlayMatrix = new float[16];
     public List<Renderer> renderers = new ArrayList<>();
     public List<Integer> shaders = new ArrayList<>();
 
@@ -49,11 +52,8 @@ public class RenderEngine {
     public int refractionDepthBufferID;
     public int refractionFrameBuffer;
 
+    private TextRenderer textRenderer;
     private static RenderEngine instance;
-
-    private RenderEngine() {
-        OnCreate();
-    }
 
     public static RenderEngine getInstance() {
         if (instance != null) {
@@ -73,6 +73,15 @@ public class RenderEngine {
 
         glViewport(0, 0, width, height);
         setProjection(fov, near, far, projection);
+
+        float aspectRatio = (float) width / height;
+        float w = 5f;
+        float top = w;
+        float bottom = -top;
+        float right = w * aspectRatio;
+        float left = -right;
+
+        overlayMatrix = Matrix4f.createOrthoMatrix(left, right, bottom, top, near, far);
     }
 
     protected void setProjection(float fov, float near, float far, Projection projection) {
@@ -161,6 +170,8 @@ public class RenderEngine {
         });
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        textRenderer = new TextRenderer("Fonts/Oswald-Bold.ttf");
     }
 
     private void initReflectionRefraction() {
@@ -255,6 +266,8 @@ public class RenderEngine {
         for (Renderer renderer : renderers) {
             renderer.Render(false);
         }
+
+        textRenderer.renderText("text", Color.Red, -8.5f, -4.5f, 0.5f);
     }
 
     private void doReflectionPass() {
