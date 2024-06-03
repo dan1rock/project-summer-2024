@@ -17,8 +17,9 @@ public class WaterRenderer extends Renderer {
     private float ambient = 0.8f;
     private float shininess = 32f;
     private float specularStrength = 0.5f;
-    private float waveLength = 20f;
+    private float waveLength = 1.5f;
     private float waveAmplitude = 0.5f;
+    private float distortionScale = 0.5f;
     private float localTime = 0f;
 
     int modelLoc;
@@ -32,6 +33,7 @@ public class WaterRenderer extends Renderer {
     int specularStrengthLoc;
     int waveLengthLoc;
     int waveAmplitudeLoc;
+    int distortionScaleLoc;
 
     public WaterRenderer(Mesh mesh, int shaderProgramID) {
         this.mesh = mesh;
@@ -65,6 +67,7 @@ public class WaterRenderer extends Renderer {
         specularStrengthLoc = glGetUniformLocation(shaderProgramID, "specularStrength");
         waveLengthLoc = glGetUniformLocation(shaderProgramID, "waveLength");
         waveAmplitudeLoc = glGetUniformLocation(shaderProgramID, "waveAmplitude");
+        distortionScaleLoc = glGetUniformLocation(shaderProgramID, "distortionScale");
     }
 
     public void setAmbient(float ambient) {
@@ -87,6 +90,10 @@ public class WaterRenderer extends Renderer {
         this.waveAmplitude = waveAmplitude;
     }
 
+    private void setDistortionScale(float distortionScale) {
+        this.distortionScale = distortionScale;
+    }
+
     public void setBaseColor(float[] color) {
         baseColor[0] = color[0];
         baseColor[1] = color[1];
@@ -101,7 +108,7 @@ public class WaterRenderer extends Renderer {
 
     @Override
     public void Update(float deltaTime) {
-        localTime += deltaTime;
+        localTime += deltaTime * 2f;
     }
 
     @Override
@@ -131,6 +138,7 @@ public class WaterRenderer extends Renderer {
         glUniform1f(specularStrengthLoc, specularStrength);
         glUniform1f(waveLengthLoc, waveLength);
         glUniform1f(waveAmplitudeLoc, waveAmplitude);
+        glUniform1f(distortionScaleLoc, distortionScale);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, renderEngine.reflectionTextureID);

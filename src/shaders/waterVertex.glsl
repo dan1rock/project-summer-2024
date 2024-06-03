@@ -22,6 +22,7 @@ uniform mat4 projection;
 uniform float waveTime;
 uniform float waveLength;
 uniform float waveAmplitude;
+uniform float distortionScale;
 
 vec3 calcNormal(vec3 vertex0, vec3 vertex1, vec3 vertex2){
     vec3 tangent = vertex1 - vertex0;
@@ -30,16 +31,13 @@ vec3 calcNormal(vec3 vertex0, vec3 vertex1, vec3 vertex2){
 }
 
 float generateOffset(float x, float z, float val1, float val2){
-    float radiansX = ((mod(x+z*x*val1, waveLength)/waveLength) + waveTime * mod(x * 0.8 + z, 1.5)) * 2.0 * PI;
-    float radiansZ = ((mod(val2 * (z*x +x*z), waveLength)/waveLength) + waveTime * 2.0 * mod(x , 2.0) ) * 2.0 * PI;
-    return waveAmplitude * 0.5 * (sin(radiansZ) + cos(radiansX) - 2);
+    return waveAmplitude * 0.5 * (sin(x + waveTime * val1) + cos(z * waveLength + waveTime * val2) - 2);
 }
 
 vec3 applyDistortion(vec3 vertex){
-    float scale = 0.02;
-    float xDistortion = generateOffset(vertex.x * scale, vertex.z * scale, 0.2, 0.1);
-    float yDistortion = generateOffset(vertex.x * scale, vertex.z * scale, 0.1, 0.3);
-    float zDistortion = generateOffset(vertex.x * scale, vertex.z * scale, 0.15, 0.2);
+    float xDistortion = generateOffset(vertex.x * distortionScale, vertex.z * distortionScale, 2, 1);
+    float yDistortion = generateOffset(vertex.x * distortionScale, vertex.z * distortionScale, 1, 3);
+    float zDistortion = generateOffset(vertex.x * distortionScale, vertex.z * distortionScale, 1.5, 2);
     return vertex + vec3(xDistortion, yDistortion, zDistortion);
 }
 
