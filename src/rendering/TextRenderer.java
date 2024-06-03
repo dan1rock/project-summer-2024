@@ -5,6 +5,7 @@ import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import src.shaderPrograms.TextShader;
 import src.utils.FileUtils;
 import src.utils.ShaderUtils;
 
@@ -23,13 +24,8 @@ public class TextRenderer {
     private static final int FONT_TEXTURE_WIDTH = 1024;
     private static final int FONT_TEXTURE_HEIGHT = 1024;
     private int fontTextureID;
-    private final int shaderProgramID;
+    private final TextShader shader;
     private STBTTBakedChar.Buffer charData;
-
-    private final int projectionLoc;
-    private final int modelLoc;
-    private final int textureLoc;
-    private final int textColorLoc;
 
     private final int vertexVboId;
     private final int textureVboId;
@@ -63,14 +59,7 @@ public class TextRenderer {
             e.printStackTrace();
         }
 
-        String textVertexShader = FileUtils.readFileAsString("src/shaders/textVertex.glsl");
-        String textFragmentShader = FileUtils.readFileAsString("src/shaders/textFragment.glsl");
-        shaderProgramID = ShaderUtils.createShaderProgram(textVertexShader, textFragmentShader);
-
-        projectionLoc = glGetUniformLocation(shaderProgramID, "projection");
-        modelLoc = glGetUniformLocation(shaderProgramID, "model");
-        textureLoc = glGetUniformLocation(shaderProgramID, "text");
-        textColorLoc = glGetUniformLocation(shaderProgramID, "textColor");
+        shader = new TextShader("src/shaders/textVertex.glsl", "src/shaders/textFragment.glsl");
 
         vertexVboId = glGenBuffers();
         textureVboId = glGenBuffers();
@@ -81,22 +70,17 @@ public class TextRenderer {
         glPushMatrix();
         glLoadIdentity();
         glRotatef(180f, 1f, 0f, 0f);
-        glUseProgram(shaderProgramID);
+
+        shader.use();
 
         float[] modelMatrix = new float[16];
 
         glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
 
-        glUniformMatrix4fv(modelLoc, false, modelMatrix);
-        glUniformMatrix4fv(projectionLoc, false, renderEngine.overlayMatrix);
-
-        glUniform3fv(textColorLoc, color);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glUniform1i(textureLoc, 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, fontTextureID);
+        shader.setModelMatrix(modelMatrix);
+        shader.setProjectionMatrix(renderEngine.overlayMatrix);
+        shader.setTextColor(color);
+        shader.bindTexture(fontTextureID);
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer xPos = stack.floats(0.0f);
@@ -171,7 +155,7 @@ public class TextRenderer {
 
         glPopMatrix();
 
-        glDisable(GL_BLEND);
+        shader.resetBindings();
     }
 
     public void cleanup() {

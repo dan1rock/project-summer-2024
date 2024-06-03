@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import src.objects.Camera;
+import src.shaderPrograms.ShaderProgram;
 import src.utils.Color;
 import src.utils.Matrix4f;
 import src.utils.Projection;
@@ -35,7 +36,7 @@ public class RenderEngine {
     public float[] viewMatrix = new float[16];
     public float[] overlayMatrix = new float[16];
     public List<Renderer> renderers = new ArrayList<>();
-    public List<Integer> shaders = new ArrayList<>();
+    public List<ShaderProgram> shaders = new ArrayList<>();
 
     public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
     public float[] clipPlane = new float[]{0f, 1f, 0f, 0f};
@@ -346,18 +347,15 @@ public class RenderEngine {
     private void updateShaders() {
         float[] projectionMatrix = new float[16];
         glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
-        for (Integer shader : shaders) {
-            glUseProgram(shader);
-            int viewLoc = glGetUniformLocation(shader, "view");
-            int projectionLoc = glGetUniformLocation(shader, "projection");
-            int lightPosLoc = glGetUniformLocation(shader, "lightPos");
-            int lightColorLoc = glGetUniformLocation(shader, "lightColor");
-
-            glUniformMatrix4fv(viewLoc, false, viewMatrix);
-            glUniformMatrix4fv(projectionLoc, false, projectionMatrix);
-            glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-            glUniform3fv(lightColorLoc, lightColor);
+        for (ShaderProgram shader : shaders) {
+            shader.use();
+            shader.setViewMatrix(viewMatrix);
+            shader.setProjectionMatrix(projectionMatrix);
+            shader.setLightPos(lightPos);
+            shader.setLightColor(lightColor);
         }
+
+        glUseProgram(0);
     }
 
     public int createFramebufferTexture(int width, int height) {

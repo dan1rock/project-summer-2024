@@ -12,7 +12,6 @@ out vec4 FragColor;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
-uniform float moveFactor;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
 
