@@ -23,8 +23,8 @@ public class WaterShader extends ShaderProgram {
     private final int waveAmplitudeLoc;
     private final int distortionScaleLoc;
 
-    public WaterShader(String vertexPath, String fragmentPath) {
-        super(vertexPath, fragmentPath);
+    public WaterShader() {
+        super("src/shaders/waterVertex.glsl", "src/shaders/waterFragment.glsl");
 
         modelLoc = glGetUniformLocation(shader, "model");
         reflectionTextureLoc = glGetUniformLocation(shader, "reflectionTexture");

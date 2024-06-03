@@ -12,7 +12,17 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class Texture {
-    public static int loadRGBTexture(String path) {
+    private final int textureID;
+
+    public Texture(String path) {
+        textureID = loadRGBTexture(path);
+    }
+
+    public int get() {
+        return textureID;
+    }
+
+    private int loadRGBTexture(String path) {
         ByteBuffer buffer = null;
         int tw = 0, th = 0;
 
@@ -40,7 +50,7 @@ public class Texture {
         return textureID;
     }
 
-    private static int setTexture(ByteBuffer buffer, int tw, int th) {
+    private int setTexture(ByteBuffer buffer, int tw, int th) {
         int textureID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);

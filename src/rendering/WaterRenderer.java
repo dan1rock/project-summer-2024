@@ -113,11 +113,11 @@ public class WaterRenderer extends Renderer {
 
         shader.setModelMatrix(modelMatrix);
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexVboId());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.textureVboId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getTextureVboId());
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.normalVboId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getNormalVboId());
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
         glEnableVertexAttribArray(0);
@@ -126,9 +126,9 @@ public class WaterRenderer extends Renderer {
 
         GL11.glColor3fv(Color.Magenta);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indexVboId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexVboId());
 
-        glDrawElements(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, mesh.getNumIndices(), GL_UNSIGNED_INT, 0);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 

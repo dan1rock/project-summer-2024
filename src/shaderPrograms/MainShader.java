@@ -18,8 +18,8 @@ public class MainShader extends ShaderProgram {
     private final int clipPlaneLoc;
     private final int useClipPlaneLoc;
 
-    public MainShader(String vertexPath, String fragmentPath) {
-        super(vertexPath, fragmentPath);
+    public MainShader() {
+        super("src/shaders/mainVertex.glsl", "src/shaders/mainFragment.glsl");
 
         modelLoc = glGetUniformLocation(shader, "model");
         viewPosLoc = glGetUniformLocation(shader, "viewPos");

@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class MeshRenderer extends Renderer {
     private final Mesh mesh;
-    private int texture;
+    private Texture texture;
     private float[] baseColor = new float[]{1f, 1f, 1f};
     private final MainShader shader;
     private boolean isTextured = false;
@@ -36,8 +36,8 @@ public class MeshRenderer extends Renderer {
         this.scale = scale;
     }
 
-    public void setTexture(int textureID) {
-        texture = textureID;
+    public void setTexture(Texture texture) {
+        this.texture = texture;
         isTextured = true;
     }
 
@@ -76,7 +76,7 @@ public class MeshRenderer extends Renderer {
 
         if (isTextured) {
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, texture);
+            glBindTexture(GL_TEXTURE_2D, texture.get());
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -112,11 +112,11 @@ public class MeshRenderer extends Renderer {
 
         shader.setModelMatrix(modelMatrix);
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexVboId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexVboId());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.textureVboId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getTextureVboId());
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.normalVboId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getNormalVboId());
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
         glEnableVertexAttribArray(0);
@@ -125,9 +125,9 @@ public class MeshRenderer extends Renderer {
 
         GL11.glColor3fv(Color.Magenta);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indexVboId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexVboId());
 
-        glDrawElements(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, mesh.getNumIndices(), GL_UNSIGNED_INT, 0);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 

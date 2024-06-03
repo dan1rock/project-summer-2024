@@ -59,7 +59,7 @@ public class TextRenderer {
             e.printStackTrace();
         }
 
-        shader = new TextShader("src/shaders/textVertex.glsl", "src/shaders/textFragment.glsl");
+        shader = new TextShader();
 
         vertexVboId = glGenBuffers();
         textureVboId = glGenBuffers();

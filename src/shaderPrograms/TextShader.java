@@ -10,8 +10,8 @@ public class TextShader extends ShaderProgram {
     private final int textureLoc;
     private final int textColorLoc;
 
-    public TextShader(String vertexPath, String fragmentPath) {
-        super(vertexPath, fragmentPath);
+    public TextShader() {
+        super("src/shaders/textVertex.glsl", "src/shaders/textFragment.glsl");
 
         modelLoc = glGetUniformLocation(shader, "model");
         textureLoc = glGetUniformLocation(shader, "font");

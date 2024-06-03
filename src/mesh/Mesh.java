@@ -14,19 +14,55 @@ import java.util.List;
 import static org.lwjgl.opengl.GL15.*;
 
 public class Mesh {
-    public int numIndices;
-    public int vertexVboId;
-    public int textureVboId;
-    public int normalVboId;
-    public int indexVboId;
-    private boolean invertNormals = false;
+    protected int numIndices;
+    protected int vertexVboId;
+    protected int textureVboId;
+    protected int normalVboId;
+    protected int indexVboId;
 
-    public void loadObj(String filename, boolean invertNormals) throws IOException {
-        this.invertNormals = invertNormals;
-        loadObj(filename);
+    public Mesh() {
+
+    };
+
+    public Mesh(String path) {
+        try {
+            loadObj(path, false);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void loadObj(String filename) throws IOException {
+    public Mesh(String path, boolean invertNormals) {
+        try {
+            loadObj(path, invertNormals);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getNumIndices() {
+        return numIndices;
+    }
+
+    public int getVertexVboId() {
+        return vertexVboId;
+    }
+
+    public int getTextureVboId() {
+        return textureVboId;
+    }
+
+    public int getNormalVboId() {
+        return normalVboId;
+    }
+
+    public int getIndexVboId() {
+        return indexVboId;
+    }
+
+    public void loadObj(String path, boolean invertNormals) throws IOException {
+        releaseVbos();
+
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Vector3f> textureCoords = new ArrayList<>();
@@ -34,7 +70,7 @@ public class Mesh {
         List<Integer> normalIndices = new ArrayList<>();
         List<Integer> textureIndices = new ArrayList<>();
 
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        BufferedReader reader = new BufferedReader(new FileReader(path));
         String line;
 
         while ((line = reader.readLine()) != null) {
@@ -138,5 +174,21 @@ public class Mesh {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         numIndices = vertexIndices.size();
+    }
+
+    public void releaseVbos() {
+        if (vertexVboId != 0) {
+            glDeleteBuffers(vertexVboId);
+        }
+        if (textureVboId != 0) {
+            glDeleteBuffers(textureVboId);
+        }
+        if (normalVboId != 0) {
+            glDeleteBuffers(normalVboId);
+        }
+        if (indexVboId != 0) {
+            glDeleteBuffers(indexVboId);
+        }
+        numIndices = 0;
     }
 }
