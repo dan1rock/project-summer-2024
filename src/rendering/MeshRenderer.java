@@ -6,6 +6,8 @@ import src.shaderPrograms.MainShader;
 import src.utils.Color;
 import src.utils.Vector3f;
 
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -19,6 +21,7 @@ public class MeshRenderer extends Renderer {
     private float ambient = 0.4f;
     private float shininess = 32f;
     private float specularStrength = 0.5f;
+    private boolean isSelected = false;
 
     public MeshRenderer(Mesh mesh, MainShader shader) {
         this.mesh = mesh;
@@ -71,6 +74,36 @@ public class MeshRenderer extends Renderer {
     }
 
     @Override
+    public void processKeyboard(boolean[] keys) {
+        isSelected = true;
+        float velocity = 2f * renderEngine.deltaTime;
+        if (keys[GLFW_KEY_W]) {
+            position.add(new Vector3f(1f, 0f, 0f).mul(velocity));
+        }
+        if (keys[GLFW_KEY_S]) {
+            position.sub(new Vector3f(1f, 0f, 0f).mul(velocity));
+        }
+        if (keys[GLFW_KEY_A]) {
+            position.sub(new Vector3f(0f, 0f, 1f).mul(velocity));
+        }
+        if (keys[GLFW_KEY_D]) {
+            position.add(new Vector3f(0f, 0f, 1f).mul(velocity));
+        }
+        if (keys[GLFW_KEY_SPACE]) {
+            position.add(new Vector3f(0f, 1f, 0f).mul(velocity));
+        }
+        if (keys[GLFW_KEY_LEFT_SHIFT]) {
+            position.sub(new Vector3f(0f, 1f, 0f).mul(velocity));
+        }
+        if (keys[GLFW_KEY_E]) {
+            rotation.y += 90f * renderEngine.deltaTime;
+        }
+        if (keys[GLFW_KEY_Q]) {
+            rotation.y -= 90f * renderEngine.deltaTime;
+        }
+    }
+
+    @Override
     public void Render(boolean clipPlane) {
         glEnable(GL_LIGHTING);
 
@@ -96,8 +129,12 @@ public class MeshRenderer extends Renderer {
         shader.use();
 
         shader.setViewPos(renderEngine.viewPos);
-        shader.setObjectColor(baseColor);
-        shader.setAmbientStrength(ambient);
+        if (isSelected) {
+            shader.setObjectColor(Color.Lemon);
+        } else {
+            shader.setObjectColor(baseColor);
+        }
+        shader.setAmbientStrength(ambient + (isSelected ? 0.5f : 0f));
         shader.setShininess(shininess);
         shader.setSpecularStrength(specularStrength);
         shader.isTextured(isTextured);
@@ -138,5 +175,6 @@ public class MeshRenderer extends Renderer {
 
         glPopMatrix();
         glUseProgram(0);
+        if (!clipPlane) isSelected = false;
     }
 }

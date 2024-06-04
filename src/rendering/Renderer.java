@@ -14,5 +14,6 @@ public abstract class Renderer {
     }
 
     public abstract void Update(float deltaTime);
+    public void processKeyboard(boolean[] keys) {}
     public abstract void Render(boolean clipPlane);
 }

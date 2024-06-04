@@ -7,10 +7,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import src.objects.Camera;
 import src.shaderPrograms.ShaderProgram;
-import src.utils.Color;
-import src.utils.Matrix4f;
-import src.utils.Projection;
-import src.utils.Vector3f;
+import src.utils.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -54,6 +51,7 @@ public class RenderEngine {
     public int refractionDepthBufferID;
     public int refractionFrameBuffer;
 
+    private ControlMode mode = ControlMode.Camera;
     private TextRenderer textRenderer;
     private static RenderEngine instance;
 
@@ -255,6 +253,7 @@ public class RenderEngine {
 
         //angle += deltaTime;
         if (angle > 6.29f) angle = 0f;
+        if (angle < 0f) angle = 6.29f;
         lightPos.x = (float) Math.sin(angle) * 1000f;
         lightPos.z = (float) Math.cos(angle) * 1000f;
 
@@ -291,6 +290,16 @@ public class RenderEngine {
         }
 
         textRenderer.renderText(String.valueOf(fps), Color.White, -8.5f, -4.5f, 0.5f);
+
+        String currentMode = "";
+        if (mode == ControlMode.Camera) {
+            currentMode = "Camera";
+        } else if (mode == ControlMode.Light) {
+            currentMode = "Light";
+        } else if (mode == ControlMode.Object) {
+            currentMode = "Object";
+        }
+        textRenderer.renderText("Mode: " + currentMode, Color.White, 5.5f, -4.5f, 0.5f);
     }
 
     private void doReflectionPass() {
@@ -340,8 +349,43 @@ public class RenderEngine {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    private boolean modeToggled = false;
+    private boolean objectToggled = false;
+    private int currentObject = 0;
     private void processInput() {
-        camera.processKeyboard(keys, deltaTime);
+        if (mode == ControlMode.Camera) {
+            camera.processKeyboard(keys, deltaTime);
+        } else if (mode == ControlMode.Light) {
+            if (keys[GLFW_KEY_E]) {
+                angle += deltaTime;
+            }
+            if (keys[GLFW_KEY_Q]) {
+                angle -= deltaTime;
+            }
+        } else if (mode == ControlMode.Object) {
+            if (keys[GLFW_KEY_G] && !objectToggled) {
+                currentObject += 1;
+                if (currentObject >= renderers.size()) {
+                    currentObject = 0;
+                }
+                objectToggled = true;
+            }
+
+            if (!keys[GLFW_KEY_G]) {
+                objectToggled = false;
+            }
+
+            renderers.get(currentObject).processKeyboard(keys);
+        }
+
+        if (keys[GLFW_KEY_T] && !modeToggled) {
+            mode = mode.next();
+            modeToggled = true;
+        }
+
+        if (!keys[GLFW_KEY_T]) {
+            modeToggled = false;
+        }
     }
 
     private void updateShaders() {
