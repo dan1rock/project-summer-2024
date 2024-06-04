@@ -5,14 +5,11 @@ layout(location = 2) in vec3 inNormal;
 
 out vec2 TexCoord;
 out vec3 FragPos;
-out vec3 LightPos;
 out vec3 Normal;
-out vec4 ViewPos;
 
 uniform vec4 clipPlane;
 uniform bool useClipPlane;
 
-uniform vec3 lightPos;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -26,6 +23,4 @@ void main() {
     FragPos = vec3(model * vec4(inPosition, 1.0));
     Normal = mat3(transpose(inverse(model))) * inNormal;
     TexCoord = inTexCoord;
-    ViewPos = view * model * vec4(inPosition, 1.0);
-    LightPos = vec3(model * vec4(lightPos, 1.0));
 }

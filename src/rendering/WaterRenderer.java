@@ -104,6 +104,8 @@ public class WaterRenderer extends Renderer {
         shader.setWaveLength(waveLength);
         shader.setWaveAmplitude(waveAmplitude);
         shader.setDistortionScale(distortionScale);
+        shader.setFogColor(renderEngine.fogColor);
+        shader.setFogLimits(renderEngine.fogStart, renderEngine.fogEnd);
 
         shader.bindTextures(renderEngine.reflectionTextureID, renderEngine.refractionTextureID);
 

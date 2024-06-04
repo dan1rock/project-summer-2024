@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         RenderEngine renderEngine = RenderEngine.getInstance();
         renderEngine.OnCreate();
-        renderEngine.camera = new Camera(new Vector3f(0f, 0f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);
+        renderEngine.camera = new Camera(new Vector3f(0f, 3f, 8f), new Vector3f(0f, 1f, 0f), -90f, 0f);
 
         MainShader mainShader = new MainShader();
         WaterShader waterShader = new WaterShader();
@@ -32,24 +32,26 @@ public class Main {
         Texture baseTexture = new Texture("./Textures/base.png");
 
         MeshRenderer penguin = new MeshRenderer(penguinMesh, mainShader);
-        MeshRenderer rabbit = new MeshRenderer(rabbitMesh, mainShader);
         penguin.setTexture(penguinTexture);
-        rabbit.setTexture(gradientTexture);
         penguin.scale.mul(3f);
+        renderEngine.renderers.add(penguin);
 
+        MeshRenderer rabbit = new MeshRenderer(rabbitMesh, mainShader);
+        rabbit.setTexture(gradientTexture);
         rabbit.position = new Vector3f(2f, 0f, 0f);
+        rabbit.rotation.y = 90f;
+        renderEngine.renderers.add(rabbit);
 
-        TerrainMesh terrainMesh = new TerrainMesh(500,  500, 20, 0.05f, 25f);
+        TerrainMesh terrainMesh = new TerrainMesh(72093763, 1000,  1000, 20, 0.05f, 50f);
         MeshRenderer terrain = new MeshRenderer(terrainMesh, mainShader);
-        terrain.position = new Vector3f(-250f, -0f, -250f);
+        terrain.position = new Vector3f(-500f, 0f, -500f);
         terrain.setTexture(grassTexture);
-        terrain.setAmbient(0.6f);
         terrain.setSpecularStrength(0f);
         renderEngine.renderers.add(terrain);
 
-        WaterMesh waterMesh = new WaterMesh(500,  500);
+        WaterMesh waterMesh = new WaterMesh(1000,  1000);
         WaterRenderer water = new WaterRenderer(waterMesh, waterShader);
-        water.position = new Vector3f(-250f, 0f, -250f);
+        water.position = new Vector3f(-500f, 0f, -500f);
         renderEngine.renderers.add(water);
 
         MeshRenderer base = new MeshRenderer(baseMesh, mainShader);
@@ -57,9 +59,6 @@ public class Main {
         base.position = new Vector3f(0f, 0f, -10f);
         base.rotation = new Vector3f(0f, -90f, 0f);
         base.scale = new Vector3f(0.2f, 0.2f, 0.2f);
-
-        renderEngine.renderers.add(rabbit);
-        renderEngine.renderers.add(penguin);
         renderEngine.renderers.add(base);
 
         renderEngine.runMainLoop();

@@ -22,6 +22,9 @@ public class WaterShader extends ShaderProgram {
     private final int waveLengthLoc;
     private final int waveAmplitudeLoc;
     private final int distortionScaleLoc;
+    private final int fogColorLoc;
+    private final int fogStartLoc;
+    private final int fogEndLoc;
 
     public WaterShader() {
         super("src/shaders/waterVertex.glsl", "src/shaders/waterFragment.glsl");
@@ -37,6 +40,9 @@ public class WaterShader extends ShaderProgram {
         waveLengthLoc = glGetUniformLocation(shader, "waveLength");
         waveAmplitudeLoc = glGetUniformLocation(shader, "waveAmplitude");
         distortionScaleLoc = glGetUniformLocation(shader, "distortionScale");
+        fogColorLoc = glGetUniformLocation(shader, "fogColor");
+        fogStartLoc = glGetUniformLocation(shader, "fogStart");
+        fogEndLoc = glGetUniformLocation(shader, "fogEnd");
     }
 
     public void setModelMatrix(float[] matrix) {
@@ -91,5 +97,14 @@ public class WaterShader extends ShaderProgram {
 
     public void setSpecularStrength(float strength) {
         glUniform1f(specularStrengthLoc, strength);
+    }
+
+    public void setFogColor(float[] color) {
+        glUniform3fv(fogColorLoc, color);
+    }
+
+    public void setFogLimits(float start, float end) {
+        glUniform1f(fogStartLoc, start);
+        glUniform1f(fogEndLoc, end);
     }
 }

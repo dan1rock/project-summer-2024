@@ -5,19 +5,21 @@ in vec3 Normal;
 in vec2 TexCoord;
 in vec4 RealCoord;
 in vec4 GridCoord;
-in vec3 LightPos;
-in vec3 ViewPos;
 
 out vec4 FragColor;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform vec3 viewPos;
+uniform vec3 lightPos;
 uniform vec3 lightColor;
+uniform vec3 fogColor;
 
 uniform float ambientStrength;
 uniform float shininess;
 uniform float specularStrength;
+uniform float fogStart;
+uniform float fogEnd;
 
 const float waveStrength = 0.02;
 
@@ -38,7 +40,7 @@ void main() {
     vec4 refractionColor = texture(refractionTexture, refractionTexCoords);
 
     // Mix reflection and refraction
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 viewDir = normalize(viewPos- FragPos);
     float fresnelFactor = dot(viewDir, Normal);
     fresnelFactor = clamp(fresnelFactor, 0.0, 1.0);
     fresnelFactor = pow(fresnelFactor, 3.0);
@@ -49,7 +51,7 @@ void main() {
     vec3 ambient = ambientStrength * lightColor;
 
     // Diffuse lighting
-    vec3 lightDir = normalize(LightPos - FragPos);
+    vec3 lightDir = normalize(lightPos - FragPos);
     float diff = max(dot(Normal, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
 
@@ -59,6 +61,13 @@ void main() {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = specularStrength * spec * lightColor;
 
+    vec4 result = vec4((ambient + diffuse + specular) * waterColor.rgb, 1.0);
 
-    FragColor = vec4((ambient + diffuse + specular) * waterColor.rgb, 1.0);
+    // Calculate the fog factor
+    float distance = length(viewPos - FragPos);
+    float fogFactor = clamp((fogEnd - distance) / (fogEnd - fogStart), 0.0, 1.0);
+
+    vec3 finalColor = mix(fogColor, result.rgb, fogFactor);
+
+    FragColor = vec4(finalColor, result.a);
 }

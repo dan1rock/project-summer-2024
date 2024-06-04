@@ -237,7 +237,7 @@ public class RenderEngine {
         }
     }
 
-    private float angle;
+    private float angle = 1f;
     private void Update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         processInput();
@@ -253,7 +253,7 @@ public class RenderEngine {
         GLFW.glfwSwapBuffers(window);
         GLFW.glfwPollEvents();
 
-        angle += deltaTime;
+        //angle += deltaTime;
         if (angle > 6.29f) angle = 0f;
         lightPos.x = (float) Math.sin(angle) * 1000f;
         lightPos.z = (float) Math.cos(angle) * 1000f;

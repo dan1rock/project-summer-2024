@@ -13,12 +13,20 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class TerrainMesh extends Mesh {
     public TerrainMesh(int width, int depth, float maxHeight, float heightMapScale, float textureScale) {
+        generateMesh(-1, width, depth, maxHeight, heightMapScale, textureScale);
+    }
+
+    public TerrainMesh(int seed, int width, int depth, float maxHeight, float heightMapScale, float textureScale) {
+        generateMesh(seed, width, depth, maxHeight, heightMapScale, textureScale);
+    }
+
+    private void generateMesh(int seed, int width, int depth, float maxHeight, float heightMapScale, float textureScale) {
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Vector3f> textureCoords = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
 
-        float[][] heightMap = generateHeightMap(width, depth, maxHeight, heightMapScale);
+        float[][] heightMap = generateHeightMap(seed, width, depth, maxHeight, heightMapScale);
 
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -96,8 +104,14 @@ public class TerrainMesh extends Mesh {
         numIndices = indices.size();
     }
 
-    private float[][] generateHeightMap(int width, int depth, float maxHeight, float scale) {
-        PerlinNoise perlinNoise = new PerlinNoise(2, 1f, 1f);
+    private float[][] generateHeightMap(int seed, int width, int depth, float maxHeight, float scale) {
+        PerlinNoise perlinNoise;
+        if (seed == -1) {
+            perlinNoise = new PerlinNoise(2, 1f, 1f);
+        } else {
+            perlinNoise = new PerlinNoise(seed, 2, 1f, 1f);
+        }
+
         float[][] heightMap = new float[width][depth];
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -120,7 +134,8 @@ public class TerrainMesh extends Mesh {
             Vector3f edge1 = new Vector3f(v1).sub(v0);
             Vector3f edge2 = new Vector3f(v0).sub(v2);
 
-            Vector3f normal = Vector3f.cross(edge1, edge2).normalize().invert();
+            Vector3f normal = Vector3f.cross(edge1, edge2).normalize();
+            normal.y = -normal.y;
 
             normals.get(index0).add(normal);
             normals.get(index1).add(normal);
