@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 import src.mesh.Mesh;
 import src.shaderPrograms.WaterShader;
 import src.utils.Color;
+import src.utils.Time;
 import src.utils.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -75,8 +76,8 @@ public class WaterRenderer extends Renderer {
     }
 
     @Override
-    public void Update(float deltaTime) {
-        localTime += deltaTime;
+    public void Update() {
+        localTime += Time.deltaTime;
     }
 
     @Override

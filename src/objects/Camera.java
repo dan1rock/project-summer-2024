@@ -1,6 +1,8 @@
 package src.objects;
 
+import src.utils.Input;
 import src.utils.Matrix4f;
+import src.utils.Time;
 import src.utils.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -49,24 +51,24 @@ public class Camera {
         return Matrix4f.lookAt(position, new Vector3f(position).add(front), up);
     }
 
-    public void processKeyboard(boolean[] keys, float deltaTime) {
-        float velocity = movementSpeed * deltaTime;
-        if (keys[GLFW_KEY_LEFT_SHIFT]) {
+    public void processKeyboard() {
+        float velocity = movementSpeed * Time.deltaTime;
+        if (Input.getKey(GLFW_KEY_LEFT_SHIFT)) {
             velocity *= 2f;
-            movementSpeed *= 1f + 0.5f * deltaTime;
+            movementSpeed *= 1f + 0.5f * Time.deltaTime;
         } else {
             movementSpeed = baseSpeed;
         }
-        if (keys[GLFW_KEY_W]) {
+        if (Input.getKey(GLFW_KEY_W)) {
             position.add(new Vector3f(front).mul(velocity));
         }
-        if (keys[GLFW_KEY_S]) {
+        if (Input.getKey(GLFW_KEY_S)) {
             position.sub(new Vector3f(front).mul(velocity));
         }
-        if (keys[GLFW_KEY_A]) {
+        if (Input.getKey(GLFW_KEY_A)) {
             position.sub(new Vector3f(right).mul(velocity));
         }
-        if (keys[GLFW_KEY_D]) {
+        if (Input.getKey(GLFW_KEY_D)) {
             position.add(new Vector3f(right).mul(velocity));
         }
     }

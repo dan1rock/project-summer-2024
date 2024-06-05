@@ -19,11 +19,6 @@ public class Cube extends Renderer {
     }
 
     @Override
-    public void Update(float deltaTime) {
-
-    }
-
-    @Override
     public void Render(boolean clipPlane) {
         float h = 1f;
 

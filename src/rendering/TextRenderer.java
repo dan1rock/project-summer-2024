@@ -6,8 +6,6 @@ import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import src.shaderPrograms.TextShader;
-import src.utils.FileUtils;
-import src.utils.ShaderUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

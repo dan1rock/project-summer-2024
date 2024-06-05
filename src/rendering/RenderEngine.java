@@ -23,10 +23,8 @@ public class RenderEngine {
     protected int width;
     protected int height;
     public Camera camera;
-    public float deltaTime;
     public int fps;
 
-    private final boolean[] keys = new boolean[1024];
     private float lastX = 400, lastY = 300;
     private boolean firstMouse = true;
 
@@ -40,8 +38,8 @@ public class RenderEngine {
     public Vector3f viewPos;
     public float[] lightColor = new float[]{1.0f, 1.0f, 1.0f};
     public float[] fogColor = new float[]{0.5f, 0.5f, 0.5f};
-    public float fogStart = 100f;
-    public float fogEnd = 200f;
+    public float fogStart = 150f;
+    public float fogEnd = 300f;
 
     public int reflectionTextureID;
     public int reflectionDepthBufferID;
@@ -150,9 +148,9 @@ public class RenderEngine {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
                     glfwSetWindowShouldClose(window, true);
                 if (action == GLFW_PRESS)
-                    keys[key] = true;
+                    Input.keyDown(key);
                 else if (action == GLFW_RELEASE)
-                    keys[key] = false;
+                    Input.keyUp(key);
             }
         });
 
@@ -222,7 +220,7 @@ public class RenderEngine {
             long elapsedTime = currentTime - lastRenderTime;
 
             if (elapsedTime >= targetFrameTime) {
-                deltaTime = (currentTime - lastRenderTime) / 1000f;
+                Time.deltaTime = (currentTime - lastRenderTime) / 1000f;
                 Update();
                 lastRenderTime = currentTime;
             } else {
@@ -239,8 +237,9 @@ public class RenderEngine {
     private void Update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         processInput();
+        Input.onInputFinish();
         for (Renderer renderer : renderers) {
-            renderer.Update(deltaTime);
+            renderer.Update();
         }
 
         glEnable(GL_CLIP_DISTANCE0);
@@ -277,7 +276,7 @@ public class RenderEngine {
     private void doMainRenderPass() {
         viewPos = camera.position;
 
-        if (keys[GLFW_KEY_R]) {
+        if (Input.getKey(GLFW_KEY_R)) {
             viewMatrix = camera.getReflectionMatrix();
         } else {
             viewMatrix = camera.getViewMatrix();
@@ -354,16 +353,16 @@ public class RenderEngine {
     private int currentObject = 0;
     private void processInput() {
         if (mode == ControlMode.Camera) {
-            camera.processKeyboard(keys, deltaTime);
+            camera.processKeyboard();
         } else if (mode == ControlMode.Light) {
-            if (keys[GLFW_KEY_E]) {
-                angle += deltaTime;
+            if (Input.getKey(GLFW_KEY_E)) {
+                angle += Time.deltaTime;
             }
-            if (keys[GLFW_KEY_Q]) {
-                angle -= deltaTime;
+            if (Input.getKey(GLFW_KEY_Q)) {
+                angle -= Time.deltaTime;
             }
         } else if (mode == ControlMode.Object) {
-            if (keys[GLFW_KEY_G] && !objectToggled) {
+            if (Input.getKeyDown(GLFW_KEY_G)) {
                 currentObject += 1;
                 if (currentObject >= renderers.size()) {
                     currentObject = 0;
@@ -371,20 +370,11 @@ public class RenderEngine {
                 objectToggled = true;
             }
 
-            if (!keys[GLFW_KEY_G]) {
-                objectToggled = false;
-            }
-
-            renderers.get(currentObject).processKeyboard(keys);
+            renderers.get(currentObject).processKeyboard();
         }
 
-        if (keys[GLFW_KEY_T] && !modeToggled) {
+        if (Input.getKeyDown(GLFW_KEY_T)) {
             mode = mode.next();
-            modeToggled = true;
-        }
-
-        if (!keys[GLFW_KEY_T]) {
-            modeToggled = false;
         }
     }
 
