@@ -19,7 +19,7 @@ public class Cube extends Renderer {
     }
 
     @Override
-    public void Render(boolean clipPlane) {
+    public void Render(boolean clipPlane, boolean shadowPass) {
         float h = 1f;
 
         glPushMatrix();

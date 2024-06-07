@@ -81,8 +81,8 @@ public class WaterRenderer extends Renderer {
     }
 
     @Override
-    public void Render(boolean clipPlane) {
-        if (clipPlane) return;
+    public void Render(boolean clipPlane, boolean shadowPass) {
+        if (clipPlane || shadowPass) return;
 
         glEnable(GL_LIGHTING);
         glDisable(GL_TEXTURE_2D);

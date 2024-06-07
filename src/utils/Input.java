@@ -24,12 +24,12 @@ public class Input {
         keyDowns.clear();
         keyUps.clear();
     }
-    public static void keyDown(int keyCode) {
+    public static void setKeyDown(int keyCode) {
         keys[keyCode] = true;
         keyDowns.add(keyCode);
     }
 
-    public static void keyUp(int keyCode) {
+    public static void setKeyUp(int keyCode) {
         keys[keyCode] = false;
         keyUps.add(keyCode);
     }

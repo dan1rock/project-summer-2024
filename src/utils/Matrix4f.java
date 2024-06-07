@@ -42,4 +42,23 @@ public class Matrix4f {
 
         return orthoMatrix;
     }
+
+    public static float[] multiply(float[] mat1, float[] mat2) {
+        if (mat1.length != 16 || mat2.length != 16) {
+            throw new IllegalArgumentException("Wrong dimensions");
+        }
+
+        float[] result = new float[16];
+
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                result[row * 4 + col] = 0;
+                for (int k = 0; k < 4; k++) {
+                    result[row * 4 + col] += mat1[row * 4 + k] * mat2[k * 4 + col];
+                }
+            }
+        }
+
+        return result;
+    }
 }

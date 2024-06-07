@@ -101,12 +101,10 @@ public class MeshRenderer extends Renderer {
     }
 
     @Override
-    public void Render(boolean clipPlane) {
+    public void Render(boolean clipPlane, boolean shadowPass) {
         glEnable(GL_LIGHTING);
 
         if (isTextured) {
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, texture.get());
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -123,28 +121,11 @@ public class MeshRenderer extends Renderer {
         glRotatef(rotation.z, 0, 0, 1);
         glScalef(scale.x, scale.y, scale.z);
 
-        shader.use();
-
-        shader.setViewPos(renderEngine.viewPos);
-        if (isSelected) {
-            shader.setObjectColor(Color.Lemon);
+        if (shadowPass) {
+            setShadowShader();
         } else {
-            shader.setObjectColor(baseColor);
+            setMainShader(clipPlane);
         }
-        shader.setAmbientStrength(ambient + (isSelected ? 0.5f : 0f));
-        shader.setShininess(shininess);
-        shader.setSpecularStrength(specularStrength);
-        shader.isTextured(isTextured);
-        shader.setFogColor(renderEngine.fogColor);
-        shader.setFogLimits(renderEngine.fogStart, renderEngine.fogEnd);
-        shader.setClipPlane(renderEngine.clipPlane);
-        shader.useClipPlane(clipPlane);
-
-        float[] modelMatrix = new float[16];
-
-        glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
-
-        shader.setModelMatrix(modelMatrix);
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexVboId());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
@@ -173,5 +154,43 @@ public class MeshRenderer extends Renderer {
         glPopMatrix();
         glUseProgram(0);
         if (!clipPlane) isSelected = false;
+    }
+
+    private void setMainShader(boolean clipPlane) {
+        shader.use();
+
+        shader.setViewPos(renderEngine.viewPos);
+        if (isSelected) {
+            shader.setObjectColor(Color.Lemon);
+        } else {
+            shader.setObjectColor(baseColor);
+        }
+        shader.setAmbientStrength(ambient + (isSelected ? 0.5f : 0f));
+        shader.setShininess(shininess);
+        shader.setSpecularStrength(specularStrength);
+        shader.isTextured(isTextured);
+        shader.setFogColor(renderEngine.fogColor);
+        shader.setFogLimits(renderEngine.fogStart, renderEngine.fogEnd);
+        shader.setClipPlane(renderEngine.clipPlane);
+        shader.useClipPlane(clipPlane);
+
+        float[] modelMatrix = new float[16];
+
+        glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
+
+        shader.setModelMatrix(modelMatrix);
+        shader.setLightSpace(renderEngine.lightSpaceMatrix);
+
+        shader.setTextures(texture.get(), renderEngine.shadowMap.getDepthTexture());
+    }
+
+    private void setShadowShader() {
+        renderEngine.shadowShader.use();
+
+        float[] modelMatrix = new float[16];
+
+        glGetFloatv(GL_MODELVIEW_MATRIX, modelMatrix);
+
+        renderEngine.shadowShader.setModelMatrix(modelMatrix);
     }
 }

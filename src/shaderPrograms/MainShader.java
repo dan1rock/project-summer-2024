@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class MainShader extends ShaderProgram {
     private final int modelLoc;
     private final int viewPosLoc;
+    private final int lightSpaceLoc;
     private final int objectColorLoc;
     private final int ambientStrengthLoc;
     private final int shininessLoc;
@@ -17,12 +18,15 @@ public class MainShader extends ShaderProgram {
     private final int fogEndLoc;
     private final int clipPlaneLoc;
     private final int useClipPlaneLoc;
+    private final int shadowMapLoc;
+    private final int mainTexLoc;
 
     public MainShader() {
         super("src/shaders/mainVertex.glsl", "src/shaders/mainFragment.glsl");
 
         modelLoc = glGetUniformLocation(shader, "model");
         viewPosLoc = glGetUniformLocation(shader, "viewPos");
+        lightSpaceLoc = glGetUniformLocation(shader, "lightSpace");
         objectColorLoc = glGetUniformLocation(shader, "objectColor");
         ambientStrengthLoc = glGetUniformLocation(shader, "ambientStrength");
         shininessLoc = glGetUniformLocation(shader, "shininess");
@@ -33,10 +37,31 @@ public class MainShader extends ShaderProgram {
         fogEndLoc = glGetUniformLocation(shader, "fogEnd");
         clipPlaneLoc = glGetUniformLocation(shader, "clipPlane");
         useClipPlaneLoc = glGetUniformLocation(shader, "useClipPlane");
+        shadowMapLoc = glGetUniformLocation(shader, "shadowMap");
+        mainTexLoc = glGetUniformLocation(shader, "mainTex");
+    }
+
+    public void setTextures(int mainTex, int shadowMap) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mainTex);
+        glUniform1i(mainTexLoc, 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, shadowMap);
+        glUniform1i(shadowMapLoc, 1);
+    }
+
+    public void resetBindings() {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public void setModelMatrix(float[] matrix) {
         glUniformMatrix4fv(modelLoc, false, matrix);
+    }
+
+    public void setLightSpace(float[] matrix) {
+        glUniformMatrix4fv(lightSpaceLoc, false, matrix);
     }
 
     public void setViewPos(Vector3f viewPos) {

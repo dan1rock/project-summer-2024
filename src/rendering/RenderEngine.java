@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import src.objects.Camera;
 import src.shaderPrograms.ShaderProgram;
+import src.shaderPrograms.ShadowShader;
 import src.utils.*;
 
 import java.nio.ByteBuffer;
@@ -30,8 +31,12 @@ public class RenderEngine {
 
     public float[] viewMatrix = new float[16];
     public float[] overlayMatrix = new float[16];
+    public float[] lightProjectionMatrix = new float[16];
+    public float[] lightSpaceMatrix = new float[16];
     public List<Renderer> renderers = new ArrayList<>();
     public List<ShaderProgram> shaders = new ArrayList<>();
+    public ShadowShader shadowShader;
+    public ShadowMap shadowMap;
 
     public Vector3f lightPos = new Vector3f(0f, 100f, 50f);
     public float[] clipPlane = new float[]{0f, 1f, 0f, 0f};
@@ -80,6 +85,7 @@ public class RenderEngine {
         float left = -right;
 
         overlayMatrix = Matrix4f.createOrthoMatrix(left, right, bottom, top, near, far);
+        lightProjectionMatrix = Matrix4f.createOrthoMatrix(-10.0f, 10.0f, -10.0f, 10.0f, near, far);
     }
 
     public void setVerticalSync(boolean enabled) {
@@ -148,9 +154,9 @@ public class RenderEngine {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
                     glfwSetWindowShouldClose(window, true);
                 if (action == GLFW_PRESS)
-                    Input.keyDown(key);
+                    Input.setKeyDown(key);
                 else if (action == GLFW_RELEASE)
-                    Input.keyUp(key);
+                    Input.setKeyUp(key);
             }
         });
 
@@ -175,6 +181,8 @@ public class RenderEngine {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         textRenderer = new TextRenderer("Fonts/Oswald-Bold.ttf");
+        shadowShader = new ShadowShader();
+        shadowMap = new ShadowMap(1024, 1024);
     }
 
     private void initReflectionRefraction() {
@@ -242,6 +250,7 @@ public class RenderEngine {
             renderer.Update();
         }
 
+        doShadowPass();
         glEnable(GL_CLIP_DISTANCE0);
         doReflectionPass();
         doRefractionPass();
@@ -285,7 +294,7 @@ public class RenderEngine {
         updateShaders();
 
         for (Renderer renderer : renderers) {
-            renderer.Render(false);
+            renderer.Render(false, false);
         }
 
         textRenderer.renderText(String.valueOf(fps), Color.White, -8.5f, -4.5f, 0.5f);
@@ -319,7 +328,7 @@ public class RenderEngine {
         clipPlane[2] = 0f;
         clipPlane[3] = 0f;
         for (Renderer renderer : renderers) {
-            renderer.Render(true);
+            renderer.Render(true, false);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -342,7 +351,25 @@ public class RenderEngine {
         clipPlane[2] = 0f;
         clipPlane[3] = 0f;
         for (Renderer renderer : renderers) {
-            renderer.Render(true);
+            renderer.Render(true, false);
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    public void doShadowPass() {
+        float[] lightModelMatrix = Matrix4f.lookAt(lightPos, new Vector3f(), new Vector3f(0f, 1f, 0f));
+        lightSpaceMatrix = Matrix4f.multiply(lightProjectionMatrix, lightModelMatrix);
+
+        shadowShader.use();
+        shadowShader.setLightSpaceMatrix(lightSpaceMatrix);
+
+        glViewport(0, 0, shadowMap.getWidth(), shadowMap.getHeight());
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getFrameBuffer());
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        for (Renderer renderer : renderers) {
+            renderer.Render(false, true);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

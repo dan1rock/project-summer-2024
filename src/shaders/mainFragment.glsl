@@ -2,10 +2,12 @@
 in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Normal;
+in vec4 FragPosLightSpace;
 
 out vec4 FragColor;
 
-uniform sampler2D textureSampler;
+uniform sampler2D mainTex;
+uniform sampler2D shadowMap;
 
 uniform vec3 viewPos;
 uniform vec3 lightPos;
@@ -21,10 +23,20 @@ uniform float fogEnd;
 
 uniform bool isTextured;
 
+float ShadowCalculation(vec4 fragPosLightSpace) {
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    float bias = 0.005;
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    return shadow;
+}
+
 void main() {
     vec4 texColor;
     if (isTextured) {
-        texColor = texture(textureSampler, TexCoord);
+        texColor = texture(mainTex, TexCoord);
     } else {
         texColor = vec4(objectColor, 1.0);
     }
@@ -44,8 +56,10 @@ void main() {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = specularStrength * spec * lightColor;
 
+    float shadow = ShadowCalculation(FragPosLightSpace);
+
     // Combine all the lighting components
-    vec3 lighting = (ambient + diffuse + specular) * objectColor;
+    vec3 lighting = (ambient + (1 - shadow) * diffuse + specular) * objectColor;
     vec4 result = vec4(lighting, 1.0) * texColor;
 
     // Calculate the fog factor

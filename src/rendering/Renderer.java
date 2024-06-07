@@ -15,5 +15,5 @@ public abstract class Renderer {
 
     public void Update() {}
     public void processKeyboard() {}
-    public abstract void Render(boolean clipPlane);
+    public abstract void Render(boolean clipPlane, boolean shadowPass);
 }
