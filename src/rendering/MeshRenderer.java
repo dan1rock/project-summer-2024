@@ -104,15 +104,6 @@ public class MeshRenderer extends Renderer {
     public void Render(boolean clipPlane, boolean shadowPass) {
         glEnable(GL_LIGHTING);
 
-        if (isTextured) {
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        }
-        else {
-            glDisable(GL_TEXTURE_2D);
-        }
-
         glPushMatrix();
 
         glTranslatef(position.x, position.y, position.z);
@@ -129,16 +120,20 @@ public class MeshRenderer extends Renderer {
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexVboId());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.getTextureVboId());
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.getNormalVboId());
-        glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+        if (!shadowPass) {
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.getTextureVboId());
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.getNormalVboId());
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+        }
 
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
+        if (!shadowPass) {
+            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(2);
+        }
 
-        GL11.glColor3fv(Color.Magenta);
+        glColor3fv(Color.Magenta);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexVboId());
 
@@ -153,7 +148,7 @@ public class MeshRenderer extends Renderer {
 
         glPopMatrix();
         glUseProgram(0);
-        if (!clipPlane) isSelected = false;
+        if (!clipPlane && !shadowPass) isSelected = false;
     }
 
     private void setMainShader(boolean clipPlane) {

@@ -12,6 +12,7 @@ import src.utils.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -85,7 +86,7 @@ public class RenderEngine {
         float left = -right;
 
         overlayMatrix = Matrix4f.createOrthoMatrix(left, right, bottom, top, near, far);
-        lightProjectionMatrix = Matrix4f.createOrthoMatrix(-10.0f, 10.0f, -10.0f, 10.0f, near, far);
+        lightProjectionMatrix = Matrix4f.createOrthoMatrix(-100.0f, 100.0f, -100.0f, 100.0f, near, far);
     }
 
     public void setVerticalSync(boolean enabled) {
@@ -182,7 +183,7 @@ public class RenderEngine {
 
         textRenderer = new TextRenderer("Fonts/Oswald-Bold.ttf");
         shadowShader = new ShadowShader();
-        shadowMap = new ShadowMap(1024, 1024);
+        shadowMap = new ShadowMap(2048 * 4, 2048 * 4);
     }
 
     private void initReflectionRefraction() {
@@ -250,11 +251,11 @@ public class RenderEngine {
             renderer.Update();
         }
 
-        doShadowPass();
         glEnable(GL_CLIP_DISTANCE0);
         doReflectionPass();
         doRefractionPass();
         glDisable(GL_CLIP_DISTANCE0);
+        doShadowPass();
         doMainRenderPass();
         GLFW.glfwSwapBuffers(window);
         GLFW.glfwPollEvents();
@@ -262,8 +263,8 @@ public class RenderEngine {
         //angle += deltaTime;
         if (angle > 6.29f) angle = 0f;
         if (angle < 0f) angle = 6.29f;
-        lightPos.x = (float) Math.sin(angle) * 1000f;
-        lightPos.z = (float) Math.cos(angle) * 1000f;
+        lightPos.x = (float) Math.sin(angle) * 100f;
+        lightPos.z = (float) Math.cos(angle) * 100f;
 
         calculateFPS();
     }
@@ -283,6 +284,8 @@ public class RenderEngine {
     }
 
     private void doMainRenderPass() {
+        glViewport(0, 0, width, height);
+
         viewPos = camera.position;
 
         if (Input.getKey(GLFW_KEY_R)) {
@@ -308,6 +311,9 @@ public class RenderEngine {
             currentMode = "Object";
         }
         textRenderer.renderText("Mode: " + currentMode, Color.White, 5.5f, -4.5f, 0.5f);
+        textRenderer.renderText("X: " + camera.position.x, Color.White, 5.5f, -3.5f, 0.5f);
+        textRenderer.renderText("Y: " + camera.position.y, Color.White, 5.5f, -3.0f, 0.5f);
+        textRenderer.renderText("Z: " + camera.position.z, Color.White, 5.5f, -2.5f, 0.5f);
     }
 
     private void doReflectionPass() {
@@ -358,15 +364,15 @@ public class RenderEngine {
     }
 
     public void doShadowPass() {
-        float[] lightModelMatrix = Matrix4f.lookAt(lightPos, new Vector3f(), new Vector3f(0f, 1f, 0f));
-        lightSpaceMatrix = Matrix4f.multiply(lightProjectionMatrix, lightModelMatrix);
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getFrameBuffer());
+        glViewport(0, 0, shadowMap.getWidth(), shadowMap.getHeight());
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        float[] lightViewMatrix = Matrix4f.lookAt(lightPos, new Vector3f(), new Vector3f(0f, 1f, 0f));
+        lightSpaceMatrix = Matrix4f.multiply(lightProjectionMatrix, lightViewMatrix);
 
         shadowShader.use();
         shadowShader.setLightSpaceMatrix(lightSpaceMatrix);
-
-        glViewport(0, 0, shadowMap.getWidth(), shadowMap.getHeight());
-        glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getFrameBuffer());
-        glClear(GL_DEPTH_BUFFER_BIT);
 
         for (Renderer renderer : renderers) {
             renderer.Render(false, true);

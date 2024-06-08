@@ -135,7 +135,6 @@ public class TerrainMesh extends Mesh {
             Vector3f edge2 = new Vector3f(v0).sub(v2);
 
             Vector3f normal = Vector3f.cross(edge1, edge2).normalize();
-            normal.y = -normal.y;
 
             normals.get(index0).add(normal);
             normals.get(index1).add(normal);

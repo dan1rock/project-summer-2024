@@ -52,10 +52,10 @@ public class Matrix4f {
 
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
-                result[row * 4 + col] = 0;
-                for (int k = 0; k < 4; k++) {
-                    result[row * 4 + col] += mat1[row * 4 + k] * mat2[k * 4 + col];
-                }
+                result[row * 4 + col] = mat2[row * 4] * mat1[col] +
+                        mat2[row * 4 + 1] * mat1[4 + col] +
+                        mat2[row * 4 + 2] * mat1[8 + col] +
+                        mat2[row * 4 + 3] * mat1[12 + col];
             }
         }
 

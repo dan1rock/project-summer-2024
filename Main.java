@@ -46,7 +46,8 @@ public class Main {
         MeshRenderer terrain = new MeshRenderer(terrainMesh, mainShader);
         terrain.position = new Vector3f(-500f, 0f, -500f);
         terrain.setTexture(grassTexture);
-        terrain.setSpecularStrength(0f);
+        terrain.setSpecularStrength(0.0f);
+        terrain.setAmbient(0.1f);
         renderEngine.renderers.add(terrain);
 
         WaterMesh waterMesh = new WaterMesh(1000,  1000);

@@ -15,7 +15,7 @@ public class WaterRenderer extends Renderer {
     private final Mesh mesh;
     private float[] baseColor = new float[]{1f, 1f, 1f};
     private final WaterShader shader;
-    private float ambient = 0.8f;
+    private float ambient = 0.4f;
     private float shininess = 32f;
     private float specularStrength = 0.5f;
     private float waveLength = 1.5f;
