@@ -73,7 +73,7 @@ public class MeshRenderer extends Renderer {
     @Override
     public void processKeyboard() {
         isSelected = true;
-        float velocity = 2f * Time.deltaTime;
+        float velocity = 5f * Time.deltaTime;
         if (Input.getKey(GLFW_KEY_W)) {
             position.add(new Vector3f(1f, 0f, 0f).mul(velocity));
         }

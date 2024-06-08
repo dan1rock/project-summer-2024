@@ -19,6 +19,7 @@ This project is graphics engine made by using Java and LWJGL library that contai
   * Camera movement(mouse + keyboard)
   * Fog rendering
   * Water rendering(distortion + reflection + refraction)
+  * Shadow rendering(+ soft shadows)
 
 ## Examples
 
@@ -35,6 +36,10 @@ __Terrain rendering__
 __Water rendering with refraction and reflection__
 
 <img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/5.png">
+
+__Shadow rendering__
+
+<img src="https://raw.githubusercontent.com/dan1rock/project-summer-2024/main/Images/6.png">
 
 ## How to use
 >All necessary libraries are in ``libs`` folder, linking of these libraries is required to run project

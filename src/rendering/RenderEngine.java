@@ -302,18 +302,19 @@ public class RenderEngine {
 
         textRenderer.renderText(String.valueOf(fps), Color.White, -8.5f, -4.5f, 0.5f);
 
-        String currentMode = "";
-        if (mode == ControlMode.Camera) {
-            currentMode = "Camera";
-        } else if (mode == ControlMode.Light) {
+        Vector3f pos = camera.position;
+        String currentMode = "Camera";
+        if (mode == ControlMode.Light) {
             currentMode = "Light";
+            pos = lightPos;
         } else if (mode == ControlMode.Object) {
             currentMode = "Object";
+            pos = renderers.get(currentObject).position;
         }
         textRenderer.renderText("Mode: " + currentMode, Color.White, 5.5f, -4.5f, 0.5f);
-        textRenderer.renderText("X: " + camera.position.x, Color.White, 5.5f, -3.5f, 0.5f);
-        textRenderer.renderText("Y: " + camera.position.y, Color.White, 5.5f, -3.0f, 0.5f);
-        textRenderer.renderText("Z: " + camera.position.z, Color.White, 5.5f, -2.5f, 0.5f);
+        textRenderer.renderText("X: " + pos.x, Color.White, 5.5f, -3.5f, 0.5f);
+        textRenderer.renderText("Y: " + pos.y, Color.White, 5.5f, -3.0f, 0.5f);
+        textRenderer.renderText("Z: " + pos.z, Color.White, 5.5f, -2.5f, 0.5f);
     }
 
     private void doReflectionPass() {
