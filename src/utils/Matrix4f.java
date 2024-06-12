@@ -17,6 +17,16 @@ public class Matrix4f {
         return result;
     }
 
+    public static float[] clearTranslation(float[] matrix) {
+        float[] result = matrix.clone();
+
+        result[12] = 0f;
+        result[13] = 0f;
+        result[14] = 0f;
+
+        return result;
+    }
+
     public static float[] createOrthoMatrix(float left, float right, float bottom, float top, float near, float far) {
         float[] orthoMatrix = new float[16];
 

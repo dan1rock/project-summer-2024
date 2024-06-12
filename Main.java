@@ -62,6 +62,9 @@ public class Main {
         base.scale = new Vector3f(0.2f, 0.2f, 0.2f);
         renderEngine.renderers.add(base);
 
+        Skybox skybox = new Skybox("./Textures/bluecloud");
+        renderEngine.renderers.add(skybox);
+
         renderEngine.runMainLoop();
     }
 }
