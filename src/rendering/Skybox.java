@@ -14,61 +14,25 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Skybox extends Renderer{
     private static final float[] skyboxVertices = {
-            -1.0f,  1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-
-            -1.0f, -1.0f,  1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f, -1.0f,
-            -1.0f,  1.0f,  1.0f,
-            -1.0f, -1.0f,  1.0f,
-
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-
-            -1.0f, -1.0f,  1.0f,
-            -1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f, -1.0f,  1.0f,
-            -1.0f, -1.0f,  1.0f,
-
-            -1.0f,  1.0f, -1.0f,
-            1.0f,  1.0f, -1.0f,
-            1.0f,  1.0f,  1.0f,
-            1.0f,  1.0f,  1.0f,
-            -1.0f,  1.0f,  1.0f,
-            -1.0f,  1.0f, -1.0f,
-
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f,  1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f,  1.0f,
-            1.0f, -1.0f,  1.0f
+            -1.0f,  1.0f, -1.0f,  -1.0f, -1.0f, -1.0f,   1.0f, -1.0f, -1.0f,   1.0f,  1.0f, -1.0f, // Back face
+            -1.0f, -1.0f,  1.0f,  -1.0f, -1.0f, -1.0f,  -1.0f,  1.0f, -1.0f,  -1.0f,  1.0f,  1.0f, // Left face
+            1.0f, -1.0f, -1.0f,   1.0f, -1.0f,  1.0f,   1.0f,  1.0f,  1.0f,   1.0f,  1.0f, -1.0f, // Right face
+            -1.0f, -1.0f,  1.0f,  -1.0f,  1.0f,  1.0f,   1.0f,  1.0f,  1.0f,   1.0f, -1.0f,  1.0f, // Front face
+            -1.0f,  1.0f, -1.0f,   1.0f,  1.0f, -1.0f,   1.0f,  1.0f,  1.0f,  -1.0f,  1.0f,  1.0f, // Top face
+            -1.0f, -1.0f, -1.0f,  -1.0f, -1.0f,  1.0f,   1.0f, -1.0f,  1.0f,   1.0f, -1.0f, -1.0f  // Bottom face
     };
-
     private final SkyboxShader skyboxShader = new SkyboxShader();
     private int skyboxVAO, skyboxVBO;
     private final int skyboxTextureID;
 
     public Skybox(String path) {
         String[] faces = new String[] {
-                path + "_rt.jpg",
-                path + "_lf.jpg",
+                path + "_ft.jpg",
+                path + "_bk.jpg",
                 path + "_up.jpg",
                 path + "_dn.jpg",
-                path + "_ft.jpg",
-                path + "_bk.jpg"
+                path + "_rt.jpg",
+                path + "_lf.jpg"
         };
 
         skyboxTextureID = loadCubemap(faces);
@@ -117,6 +81,7 @@ public class Skybox extends Renderer{
     @Override
     public void Render(boolean clipPlane, boolean shadowPass) {
         glDepthFunc(GL_LEQUAL);
+        glCullFace(GL_BACK);
 
         skyboxShader.use();
 
@@ -131,9 +96,10 @@ public class Skybox extends Renderer{
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTextureID);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_QUADS, 0, 24);
         glBindVertexArray(0);
 
         glDepthFunc(GL_LESS);
+        glCullFace(GL_FRONT);
     }
 }
