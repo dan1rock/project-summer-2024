@@ -22,7 +22,8 @@ public class Skybox extends Renderer{
             -1.0f, -1.0f, -1.0f,  -1.0f, -1.0f,  1.0f,   1.0f, -1.0f,  1.0f,   1.0f, -1.0f, -1.0f  // Bottom face
     };
     private final SkyboxShader skyboxShader = new SkyboxShader();
-    private int skyboxVAO, skyboxVBO;
+    private int skyboxVAO;
+    private int skyboxVBO;
     private final int skyboxTextureID;
 
     public Skybox(String path) {
@@ -36,10 +37,10 @@ public class Skybox extends Renderer{
         };
 
         skyboxTextureID = loadCubemap(faces);
-        setupSkybox();
+        init();
     }
 
-    private void setupSkybox() {
+    private void init() {
         skyboxVAO = glGenVertexArrays();
         skyboxVBO = glGenBuffers();
         glBindVertexArray(skyboxVAO);
@@ -50,7 +51,7 @@ public class Skybox extends Renderer{
         glBindVertexArray(0);
     }
 
-    public int loadCubemap(String[] faces) {
+    private int loadCubemap(String[] faces) {
         int textureID = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 

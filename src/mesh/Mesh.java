@@ -15,10 +15,10 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class Mesh {
     protected int numIndices;
-    protected int vertexVboId;
-    protected int textureVboId;
-    protected int normalVboId;
-    protected int indexVboId;
+    protected int vertexVBO;
+    protected int textureVBO;
+    protected int normalVBO;
+    protected int indexVBO;
 
     public Mesh() {
 
@@ -44,20 +44,20 @@ public class Mesh {
         return numIndices;
     }
 
-    public int getVertexVboId() {
-        return vertexVboId;
+    public int getVertexVBO() {
+        return vertexVBO;
     }
 
-    public int getTextureVboId() {
-        return textureVboId;
+    public int getTextureVBO() {
+        return textureVBO;
     }
 
-    public int getNormalVboId() {
-        return normalVboId;
+    public int getNormalVBO() {
+        return normalVBO;
     }
 
-    public int getIndexVboId() {
-        return indexVboId;
+    public int getIndexVBO() {
+        return indexVBO;
     }
 
     public void loadObj(String path, boolean invertNormals) throws IOException {
@@ -146,18 +146,18 @@ public class Mesh {
         textureBuffer.flip();
         normalsBuffer.flip();
 
-        vertexVboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vertexVboId);
+        vertexVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
         glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        textureVboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, textureVboId);
+        textureVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, textureVBO);
         glBufferData(GL_ARRAY_BUFFER, textureBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        normalVboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, normalVboId);
+        normalVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
         glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -168,8 +168,8 @@ public class Mesh {
         }
 
         indicesBuffer.flip();
-        indexVboId = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboId);
+        indexVBO = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -177,17 +177,17 @@ public class Mesh {
     }
 
     public void releaseVbos() {
-        if (vertexVboId != 0) {
-            glDeleteBuffers(vertexVboId);
+        if (vertexVBO != 0) {
+            glDeleteBuffers(vertexVBO);
         }
-        if (textureVboId != 0) {
-            glDeleteBuffers(textureVboId);
+        if (textureVBO != 0) {
+            glDeleteBuffers(textureVBO);
         }
-        if (normalVboId != 0) {
-            glDeleteBuffers(normalVboId);
+        if (normalVBO != 0) {
+            glDeleteBuffers(normalVBO);
         }
-        if (indexVboId != 0) {
-            glDeleteBuffers(indexVboId);
+        if (indexVBO != 0) {
+            glDeleteBuffers(indexVBO);
         }
         numIndices = 0;
     }

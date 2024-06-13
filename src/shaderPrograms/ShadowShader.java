@@ -8,7 +8,7 @@ public class ShadowShader extends ShaderProgram {
     private final int modelLoc;
 
     public ShadowShader() {
-        super("src/shaders/shadowVertex.glsl", "src/shaders/shadowFragment.glsl");
+        super("src/shaders/shadow.vert", "src/shaders/shadow.frag");
 
         lightSpaceMatrixLoc = glGetUniformLocation(shader, "lightSpaceMatrix");
         modelLoc = glGetUniformLocation(shader, "model");

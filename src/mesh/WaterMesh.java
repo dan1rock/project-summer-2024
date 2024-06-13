@@ -68,23 +68,23 @@ public class WaterMesh extends Mesh {
         normalsBuffer.flip();
         indicesBuffer.flip();
 
-        vertexVboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vertexVboId);
+        vertexVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
         glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        textureVboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, textureVboId);
+        textureVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, textureVBO);
         glBufferData(GL_ARRAY_BUFFER, textureBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        normalVboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, normalVboId);
+        normalVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
         glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        indexVboId = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboId);
+        indexVBO = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 

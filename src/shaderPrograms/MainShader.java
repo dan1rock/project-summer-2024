@@ -22,7 +22,7 @@ public class MainShader extends ShaderProgram {
     private final int mainTexLoc;
 
     public MainShader() {
-        super("src/shaders/mainVertex.glsl", "src/shaders/mainFragment.glsl");
+        super("src/shaders/main.vert", "src/shaders/main.frag");
 
         modelLoc = glGetUniformLocation(shader, "model");
         viewPosLoc = glGetUniformLocation(shader, "viewPos");

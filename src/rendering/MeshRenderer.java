@@ -1,6 +1,5 @@
 package src.rendering;
 
-import org.lwjgl.opengl.GL11;
 import src.mesh.Mesh;
 import src.shaderPrograms.MainShader;
 import src.utils.Color;
@@ -118,12 +117,12 @@ public class MeshRenderer extends Renderer {
             setMainShader(clipPlane);
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexVboId());
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.getVertexVBO());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         if (!shadowPass) {
-            glBindBuffer(GL_ARRAY_BUFFER, mesh.getTextureVboId());
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.getTextureVBO());
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-            glBindBuffer(GL_ARRAY_BUFFER, mesh.getNormalVboId());
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.getNormalVBO());
             glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
         }
 
@@ -135,7 +134,7 @@ public class MeshRenderer extends Renderer {
 
         glColor3fv(Color.Magenta);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexVboId());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexVBO());
 
         glDrawElements(GL_TRIANGLES, mesh.getNumIndices(), GL_UNSIGNED_INT, 0);
 

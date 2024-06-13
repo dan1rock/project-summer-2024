@@ -11,7 +11,7 @@ public class TextShader extends ShaderProgram {
     private final int textColorLoc;
 
     public TextShader() {
-        super("src/shaders/textVertex.glsl", "src/shaders/textFragment.glsl");
+        super("src/shaders/text.vert", "src/shaders/text.frag");
 
         modelLoc = glGetUniformLocation(shader, "model");
         textureLoc = glGetUniformLocation(shader, "font");

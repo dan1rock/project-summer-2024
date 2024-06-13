@@ -27,7 +27,7 @@ public class WaterShader extends ShaderProgram {
     private final int fogEndLoc;
 
     public WaterShader() {
-        super("src/shaders/waterVertex.glsl", "src/shaders/waterFragment.glsl");
+        super("src/shaders/water.vert", "src/shaders/water.frag");
 
         modelLoc = glGetUniformLocation(shader, "model");
         reflectionTextureLoc = glGetUniformLocation(shader, "reflectionTexture");
